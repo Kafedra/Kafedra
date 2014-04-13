@@ -25,6 +25,7 @@ public class TreeNodeFactory {
 		loadKindRenamingTable.put("экз.конс.", "Консультация");
 		loadKindRenamingTable.put("контр.", "Контрольная");
 		loadKindRenamingTable.put("КП", "Курсовой проект");
+		loadKindRenamingTable.put("КР", "Курсовая работа");
 	}
 	
 	static Node rootAuthum = null;

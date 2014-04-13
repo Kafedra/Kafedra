@@ -13,7 +13,7 @@ $.ajaxSetup ({
 				$ul.show();
 			else
 				$ul.hide();
-	        event.preventDefault();
+	        //event.preventDefault();
 		});
 	});
 })();	
@@ -38,13 +38,12 @@ function ajaxLoad(id) {
 
 //Get teacher's load info by ajax-GET query
 function ajaxAppoint(teacher_id) {
-	alert('Ajax appoint: ' + teacher_id + ' | ' + globalSelectedLoadID);
 	if (globalSelectedLoadID == 0) {
 		alert("Нагрузка не выбрана!");
 		return;
 	}
 	
-	$.getJSON("../AppointLoadTo", {"load_id": globalSelectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( responseObject ) {
+	$.getJSON("../AppointLoadTo", {"load_id": globalSelectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
         if (response.success) {
         	ajaxLoad(globalSelectedLoadID);
         } else {
@@ -55,12 +54,3 @@ function ajaxAppoint(teacher_id) {
 		alert("Request Failed: " + err);
 	});
 }
-
-(function () {
-	$(document).ready(function(){
-		$( "#btnappoint" )
-	      .click(function( event ) {
-	    	  ajaxAppoint($('#combobox option:selected').key())
-	      });
-	});
-})();

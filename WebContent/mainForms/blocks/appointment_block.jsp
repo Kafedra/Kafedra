@@ -43,7 +43,7 @@
                                 <c:forEach var="row" items="${result.rows}">
                                     <option value="${row.id}"><c:out value="${row.fio}"/></option>
                                 </c:forEach>
-                                </select> <input id="btnappoint" type="button" value="Назначить"/>
+                                </select> <input id="btnappoint" onclick="ajaxAppoint($('#combobox option:selected').val());" type="button" value="Назначить"/>
                             </td>     
                     </tr>
                 </table>            

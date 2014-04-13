@@ -34,7 +34,7 @@
 			<td rowspan=2 class="tree" >
 			<fieldset style="vertical-align:top; horizontal-align:left;">
 				<legend>Кафедра</legend>
-				<%@ include file="blocks/tree_block.jsp" %>
+				 <%@ include file="blocks/tree_block.jsp" %>
 			</fieldset>	
 			</td>		
 			
@@ -45,6 +45,7 @@
 				<%@ include file="blocks/appointment_block.jsp" %>  
 			</fieldset>	
             </td>
+           </tr>
 		</table>
 	</div>
 </body>

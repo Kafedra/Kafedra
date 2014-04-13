@@ -11,6 +11,9 @@ public class Node {
 	private String nodeName;
 	// Status of node ( checked or not checked )
 	private int isSelected;
+	
+	private boolean isAppointed;
+	
 	// Each node has list of children
 	private ArrayList<Node> childrens = new ArrayList<>();	
 	// This will hold exceptions if occurred.
@@ -77,6 +80,14 @@ public class Node {
 	
 	public void setLoadNode(boolean load) {
 		this.isLoadNode = load;
+	}
+	
+	public void setAppointed(boolean isAppointed) {
+		this.isAppointed = isAppointed;
+	}
+	
+	public boolean isAppointed() {
+		return this.isAppointed;
 	}
 }
 
