@@ -3,7 +3,7 @@
   <ul id="menu" >
    	<li><a href="#">Файл</a>
    		<ul>
-   			<li><a href="Upload.jsp">Загрузить</a></li>
+   			<li><a id="opener">Загрузить</a></li>
    		</ul>
    	</li>
     <li><a href="#">Настройки</a></li>

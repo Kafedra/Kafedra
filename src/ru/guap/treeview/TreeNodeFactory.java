@@ -46,13 +46,13 @@ public class TreeNodeFactory {
 	public static Node getRootNode(boolean isAuthum) throws SQLException {
 		if (isAuthum) {
 			//if (rootAuthum == null) { // without caching
-				rootAuthum = getTreeFromDb(isAuthum, 2);
+				rootAuthum = getTreeFromDb(isAuthum, 1);
 			//}
 			
 			return rootAuthum;
 		} else {
 			//if (rootSpring == null) { // without caching
-				rootSpring = getTreeFromDb(isAuthum, 2);
+				rootSpring = getTreeFromDb(isAuthum, 1);
 			//}
 			
 			return rootSpring;

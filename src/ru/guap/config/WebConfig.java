@@ -3,7 +3,7 @@ package ru.guap.config;
 public class WebConfig {
     public static String DBF_UPLOAD_PATH = System.getProperty("user.dir") + System.getProperty("file.separator") + "uploads";
     
-    public static String JSP_PREFIX = "/DBTest";
+    public static String JSP_PREFIX = "/Kafedra";
     
     public static String PAGE_NAME_MAIN = JSP_PREFIX + "/Main.jsp";
     public static String PAGE_NAME_ERROR = JSP_PREFIX + "/Error.jsp";

@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="../css/appointment_style.css">
 <link rel="stylesheet" href="../css/jquery.dataTables.css">
 <link rel="stylesheet" href="../css/hot-sneaks/jquery-ui-1.9.2.custom.min.css">
+<link rel="stylesheet" href="../css/ProgressBar.css">
 <script src="../js/jquery-1.8.3.js"></script>
 <script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
 <!-- script src="../js/jquery.dataTables.min.js"></script>
@@ -21,8 +22,10 @@
 <script src="../js/tree.js"></script>
 <script src="../js/appointment_scripts.js"></script>
 <script src="../js/top_block_script.js"></script>
+<script src="../js/ProgressBar.js"></script>
 </head>
 <body>
+	<%@ include file="blocks/dialogs.jsp" %>
 	<div class="container">
 		<table>
 		<tr>
@@ -42,6 +45,7 @@
 			<fieldset>
 				<legend>Нагрузка</legend>
 				<%@ include file="blocks/chart_block.jsp" %><br/>
+				<%@ include file="blocks/ProgressBar.jsp" %><br/>
 				<%@ include file="blocks/appointment_block.jsp" %>  
 			</fieldset>	
             </td>

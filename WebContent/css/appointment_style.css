@@ -16,3 +16,16 @@
     margin: 0;
     padding: 0.3em;
   }
+  
+  td.app{
+  	font-style:italic;
+  
+  }
+  
+  ul.tree a.appointed{
+  	color:green;
+  }
+  
+  ul.tree a.notappointed{
+  	color:red;
+  }

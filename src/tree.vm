@@ -1,11 +1,23 @@
-
 #if ($node.getErrorDescription()!="") Error Occurred : $node.getErrorDescription() #else
 
 #foreach($child in $node.getChildren())
     
-    #if ($child.getChildren().size() != 0) <li class="parent-node" id="$child.getNodeId()"> #else <li class="last" id="$child.getNodeId()"> #end 
-    #if($child.getIsSelected()==0) <input type="checkbox" name="$child.getNodeName()" style="horizontal-align: left;"/> #else <input type="checkbox" name="$child.getNodeName()" checked="checked" /> #end 
-    #if ($child.getChildren().size() != 0) <a href="#" onclick="toggle('$child.getNodeId()')"> #else <a href="#" onclick="ajaxLoad('$child.getNodeId()')"> #end $child.getNodeName() </a>
+    #if ($child.getChildren().size() != 0) 
+    	<li class="parent-node" id="$child.getNodeId()">
+     #else 
+     	<li class="last" id="$child.getNodeId()"> #end 
+    	
+    #if ($child.getChildren().size() != 0) 
+    	<a href="#" onclick="toggle('$child.getNodeId()')"> 
+    #else 
+    	#if($child.isAppointed())
+    		#set( $class = "appointed" )
+    	#else
+    		#set( $class = "notappointed" )
+    	#end
+    	<a href="#" onclick="ajaxLoad('$child.getNodeId()')" class="$class">
+   	#end 
+    $child.getNodeName() </a>
     #if ( $child.getChildren().size() != 0 )    
         <ul id="$child.getNodeId()" style="display:none" class="tree-parent">
         #set ( $node.children = $child.getChildren())
