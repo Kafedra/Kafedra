@@ -14,8 +14,9 @@ ul.tree, ul.tree ul {
 	}
 
 ul.tree a {
-	text-decoration: underline;
+	text-decoration: none;
 	color: #369;
+	
 }
 ul.tree ul { 
 	margin-left: 10px; 
@@ -28,7 +29,7 @@ ul.tree li:last-child {
 
 ul.tree li { 
 	margin: 0; 
-	padding: 0 12px; 
+	padding: 5px; 
 	line-height: 15px; 
 	background: url(../treeImg/picture-currentnode.png) no-repeat; 
 	color: #369; 

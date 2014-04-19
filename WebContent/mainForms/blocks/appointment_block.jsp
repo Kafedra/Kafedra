@@ -13,21 +13,29 @@
     <body>
         <table>
             <tr>
-                <td>Дисциплина: <span id="app-NameDisc"></span></td>            
+                <td class="app">Дисциплина: <span id="app-NameDisc"></span></td>            
             </tr>
             <tr>
-                <td>Тип занятий: <span id="app-KindLoad"></span></td>
+                <td class="app">Вид занятия: <span id="app-KindLoad"></span></td>
             </tr>
             <tr>
-                <td>Группа: <span id="app-Group"></span></td>
+                <td class="app">Группа (поток): <span id="app-Group"></span></td>
             </tr>
             <tr>
-                <td>Преподаватель: <span id="app-Teacher"></span></td>
+                <td class="app">Количество часов:</td>
             </tr>
             <tr>
-                <td><%@ include file="table_block.jsp" %></td> 
+                <td class="app">Бюджет: </td>
             </tr>
-                        
+            <tr>
+                <td class="app">Контракт: </td>
+            </tr>
+            <tr>
+                <td class="app">Итого: </td>
+            </tr>
+            <tr>
+                <td class="app">Преподаватель: <span id="app-Teacher"></span></td>
+            </tr>                        
             <tr>
                 <td>                            
                 <fieldset>                                                      
@@ -43,7 +51,7 @@
                                 <c:forEach var="row" items="${result.rows}">
                                     <option value="${row.id}"><c:out value="${row.fio}"/></option>
                                 </c:forEach>
-                                </select> <input id="btnappoint" onclick="ajaxAppoint($('#combobox option:selected').val());" type="button" value="Назначить"/>
+                                </select> <input id="btnappoint" class="but" onclick="ajaxAppoint($('#combobox option:selected').val());" type="button" value="Назначить"/>
                             </td>     
                     </tr>
                 </table>            

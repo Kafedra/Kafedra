@@ -13,7 +13,7 @@ $.ajaxSetup ({
 				$ul.show();
 			else
 				$ul.hide();
-	        //event.preventDefault();
+	        event.preventDefault();
 		});
 	});
 })();	
@@ -39,7 +39,7 @@ function ajaxLoad(id) {
 //Get teacher's load info by ajax-GET query
 function ajaxAppoint(teacher_id) {
 	if (globalSelectedLoadID == 0) {
-		alert("Нагрузка не выбрана!");
+		alert("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ!");
 		return;
 	}
 	
