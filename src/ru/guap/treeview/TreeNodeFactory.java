@@ -17,15 +17,15 @@ public class TreeNodeFactory {
 	static {
 		loadKindRenamingTable = new Hashtable<>();
 		
-		loadKindRenamingTable.put("экз", "Экзамен");
-		loadKindRenamingTable.put("зач", "Зачёт");
 		loadKindRenamingTable.put("лекц", "Лекция");
-		loadKindRenamingTable.put("лаб", "Лабораторная");
 		loadKindRenamingTable.put("практ", "Практика");
-		loadKindRenamingTable.put("экз.конс.", "Консультация");
-		loadKindRenamingTable.put("контр.", "Контрольная");
-		loadKindRenamingTable.put("КП", "Курсовой проект");
+		loadKindRenamingTable.put("лаб", "Лабораторная");
 		loadKindRenamingTable.put("КР", "Курсовая работа");
+		loadKindRenamingTable.put("КП", "Курсовой проект");
+		loadKindRenamingTable.put("контр.", "Контрольная");
+		loadKindRenamingTable.put("зач", "Зачёт");
+		loadKindRenamingTable.put("экз.конс.", "Консультация");
+		loadKindRenamingTable.put("экз", "Экзамен");
 	}
 	
 	static Node rootAuthum = null;
@@ -43,23 +43,25 @@ public class TreeNodeFactory {
 	static PreparedStatement selectGroupsAndLoadsSpring;
 	static String selectGroupsAndLoadsSpringSql = "SELECT id, Nstream, `Group`, KindLoad, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND load_id=?)";
 	
-	public static Node getRootNode(boolean isAuthum) throws SQLException {
-		if (isAuthum) {
+	public static final int LOAD_VERSION = 1;
+	
+	public static Node getRootNode(boolean isAutumn) throws SQLException {
+		if (isAutumn) {
 			//if (rootAuthum == null) { // without caching
-				rootAuthum = getTreeFromDb(isAuthum, 1);
+				rootAuthum = getTreeFromDb(isAutumn, LOAD_VERSION);
 			//}
 			
 			return rootAuthum;
 		} else {
 			//if (rootSpring == null) { // without caching
-				rootSpring = getTreeFromDb(isAuthum, 1);
+				rootSpring = getTreeFromDb(isAutumn, LOAD_VERSION);
 			//}
 			
 			return rootSpring;
 		}
 	}
 	
-	private static Node getTreeFromDb(boolean isAuthum, int version) throws SQLException {
+	private static Node getTreeFromDb(boolean isAutumn, int version) throws SQLException {
 		Connection cnn = DBManager.getInstance().getConnection();
 		
 		Node root = new Node("root");
@@ -68,7 +70,7 @@ public class TreeNodeFactory {
 		
 		// Get disciplines names
 		ArrayList<String> discNames = new ArrayList<>();
-		if (isAuthum) {
+		if (isAutumn) {
 			if (selectDiscNamesAuthum == null) {
 				selectDiscNamesAuthum = cnn.prepareStatement(selectDiscNamesAuthumSql);
 			}
@@ -96,7 +98,7 @@ public class TreeNodeFactory {
 			node.setIsSelected(0);
 			node.setErrorDescription("");
 			
-			setGroupsAndLoadsToDisc(node, cnn, isAuthum, version);
+			setGroupsAndLoadsToDisc(node, cnn, isAutumn, version);
 			
 			root.addChildNode(node);
 		}
@@ -104,11 +106,11 @@ public class TreeNodeFactory {
 		return root;
 	}
 	
-	private static void setGroupsAndLoadsToDisc(Node disc, Connection cnn, boolean isAuthum, int version) throws SQLException {
+	private static void setGroupsAndLoadsToDisc(Node disc, Connection cnn, boolean isAutumn, int version) throws SQLException {
 		Hashtable<Integer, String> streams = new Hashtable<>(); // Stream data by stream id
 		
 		PreparedStatement ps;
-		if (isAuthum) {
+		if (isAutumn) {
 			ps = cnn.prepareStatement("SELECT DISTINCT Nstream FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc=? AND Nstream != 0 AND load_id=?)");
 		} else {
 			ps = cnn.prepareStatement("SELECT DISTINCT Nstream FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc=? AND Nstream != 0 AND load_id=?)");
@@ -122,7 +124,7 @@ public class TreeNodeFactory {
 		// Found stream 
 		if (res.next()) {
 			int nStream = res.getInt(1);
-			ArrayList<String> streamGroups = getGroupListForStream(cnn, isAuthum, nStream, disc.getNodeName(), version);
+			ArrayList<String> streamGroups = getGroupListForStream(cnn, isAutumn, nStream, disc.getNodeName(), version);
 
 			StringBuilder streamString = new StringBuilder("Поток: ");
 
@@ -140,22 +142,25 @@ public class TreeNodeFactory {
 			Hashtable<String, Node> loadNodes = new Hashtable<>();
 			
 			for (String group : streamGroups) {
-				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAuthum, disc.getNodeName(), group, version);
+				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAutumn, disc.getNodeName(), group, version);
 				
 				for (String kind : loadKinds) {
-					if (loadNodes.containsKey(kind)) {
-						int loadID = getLoadIdByGroupKindDisc(cnn, isAuthum, group, kind, disc.getNodeName(), version);
+					Boolean isAppointed = false;
+					
+					if (loadNodes.containsKey(kind)) {	
+						int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version, isAppointed);
 						
 						if (loadID != 0) {
 							Node groupLeaf = new Node(new Integer(loadID).toString(), group);
 							groupLeaf.setLoadNode(true);
+							groupLeaf.setAppointed(isAppointed);
 							
 							loadNodes.get(kind).addChildNode(groupLeaf);
 						} else {
 							System.out.println("LoadID is ZERO! for " + group + " " + kind + " " + disc.getNodeName());
 						}
 					} else {
-						int loadID = getLoadIdByGroupKindDisc(cnn, isAuthum, group, kind, disc.getNodeName(), version);
+						int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version, isAppointed);
 						
 						if (loadID != 0) {
 							Node loadKindNode = new Node("0", loadKindRenamingTable.get(kind));
@@ -163,6 +168,7 @@ public class TreeNodeFactory {
 							
 							Node groupLeaf = new Node(new Integer(loadID).toString(), group);
 							groupLeaf.setLoadNode(true);
+							groupLeaf.setAppointed(isAppointed);
 							loadNodes.get(kind).addChildNode(groupLeaf);
 						} else {
 							System.out.println("LoadID is ZERO! for " + group + " " + kind + " " + disc.getNodeName());
@@ -175,17 +181,19 @@ public class TreeNodeFactory {
 				streamNode.addChildNode(loadNodes.get(k));
 			}
 		} else { // Is not stream
-			ArrayList<String> discGroups = getGroupListForDisc(cnn, isAuthum, disc.getNodeName(), version);
+			ArrayList<String> discGroups = getGroupListForDisc(cnn, isAutumn, disc.getNodeName(), version);
 			
 			for (String group : discGroups) {
 				Node groupNode = new Node("0", group);
 				
-				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAuthum, disc.getNodeName(), group, version);
+				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAutumn, disc.getNodeName(), group, version);
 				
 				for (String kind : loadKinds) {
-					int loadID = getLoadIdByGroupKindDisc(cnn, isAuthum, group, kind, disc.getNodeName(), version);
+					Boolean isAppointed = false;
+					int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version, isAppointed);
 					
 					Node kindNode = new Node(new Integer(loadID).toString(), loadKindRenamingTable.get(kind));
+					kindNode.setAppointed(isAppointed);
 					
 					groupNode.addChildNode(kindNode);
 				}
@@ -195,14 +203,14 @@ public class TreeNodeFactory {
 		}
 	}
 	
-	private static int getLoadIdByGroupKindDisc(Connection cnn, boolean isAuthum, String group, String kind, String discName, int version) throws SQLException {
+	private static int getLoadIdByGroupKindDisc(Connection cnn, boolean isAutumn, String group, String kind, String discName, int version, Boolean isAppointed) throws SQLException {
 		int result = 0;
 		
 		PreparedStatement ps;
-		if (isAuthum) {
-			ps = cnn.prepareStatement("SELECT id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
+		if (isAutumn) {
+			ps = cnn.prepareStatement("SELECT id, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
 		} else {
-			ps = cnn.prepareStatement("SELECT id KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
+			ps = cnn.prepareStatement("SELECT id, teachers_id, KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
 		}
 
 		ps.setString(1, discName);
@@ -219,11 +227,11 @@ public class TreeNodeFactory {
 		return result;		
 	}
 	
-	private static ArrayList<String> getLoadKindsForDiscAndGroup(Connection cnn, boolean isAuthum, String discName, String group, int version) throws SQLException {
+	private static ArrayList<String> getLoadKindsForDiscAndGroup(Connection cnn, boolean isAutumn, String discName, String group, int version) throws SQLException {
 		ArrayList<String> result = new ArrayList<String>();
 		
 		PreparedStatement ps;
-		if (isAuthum) {
+		if (isAutumn) {
 			ps = cnn.prepareStatement("SELECT DISTINCT KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND `Group` = ? AND load_id = ?)");
 		} else {
 			ps = cnn.prepareStatement("SELECT DISTINCT KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND `Group` = ? AND load_id = ?)");
@@ -244,9 +252,9 @@ public class TreeNodeFactory {
 		return result;
 	}
 	
-	private static ArrayList<String> getGroupListForDisc(Connection cnn, boolean isAuthum, String discName, int version) throws SQLException {
+	private static ArrayList<String> getGroupListForDisc(Connection cnn, boolean isAutumn, String discName, int version) throws SQLException {
 		PreparedStatement ps;
-		if (isAuthum) {
+		if (isAutumn) {
 			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND load_id = ?)");
 		} else {
 			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND load_id = ?)");
@@ -268,9 +276,9 @@ public class TreeNodeFactory {
 	}
 
 	
-	private static ArrayList<String> getGroupListForStream(Connection cnn, boolean isAuthum, int nStream, String discName, int version) throws SQLException {
+	private static ArrayList<String> getGroupListForStream(Connection cnn, boolean isAutumn, int nStream, String discName, int version) throws SQLException {
 		PreparedStatement ps;
-		if (isAuthum) {
+		if (isAutumn) {
 			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND NStream = ? AND load_id = ?)");
 		} else {
 			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND NStream = ? AND load_id = ?)");
