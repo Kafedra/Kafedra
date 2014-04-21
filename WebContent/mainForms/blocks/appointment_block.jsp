@@ -42,17 +42,19 @@
                 <legend>Область заполнения данных:</legend>
                 <table>
                     <tr>
-                        <td>Выбор преподавателя:</td>   
+                        <td style="width:1px">Выбор преподавателя:</td>   
                             <td>
-                                <select id="combobox">
+                                <select id="combobox" style="width:3in">
                                 <sql:setDataSource var="ds" driver="com.mysql.jdbc.Driver" url="<%=DBManager.URL %>" user="<%=DBManager.DB_LOGIN %>" password="<%=DBManager.DB_PASS %>"/>
-                                
                                 <sql:query dataSource="${ds}" sql="SELECT * FROM kafedra.teachers;" var="result" />                     
                                 <c:forEach var="row" items="${result.rows}">
                                     <option value="${row.id}"><c:out value="${row.fio}"/></option>
                                 </c:forEach>
-                                </select> <input id="btnappoint" class="but" onclick="ajaxAppoint($('#combobox option:selected').val());" type="button" value="Назначить"/>
+                                </select>                               
                             </td>     
+                            <td>
+                            	 <input id="btnappoint" type="button" class="but" value="Назначить"/>
+                            </td>
                     </tr>
                 </table>            
                 </fieldset>                     

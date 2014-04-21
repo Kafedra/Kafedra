@@ -1,13 +1,12 @@
 <%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="ru.guap.dao.DBManager" %>
 <table>
 	<tr>
-		<td>
-			<div id="progressbar"><div class="progress-label">Loading...</div></div>
+		<td style="width:90%">
+			<div id="progressbar"><div class="progress-label">is Empty</div></div>
 		</td>		
-	</tr>
-	<tr>
 		<td>
-			<input type="submit" class="but" value="Показать нераспределенную нагрузку">
+			<input id="show" type="submit" class="but" value="Показать">
 		</td>				
 	</tr>
 </table>

@@ -29,3 +29,7 @@
   ul.tree a.notappointed{
   	color:red;
   }
+  
+  ul.tree a.semiappointed{
+  	color:#f90;
+  }
