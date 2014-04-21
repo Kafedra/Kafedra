@@ -5,20 +5,18 @@ $.ajaxSetup ({
     cache: false
 });
 
-(function () {
-	$(document).ready(function(){
-		$('.tree a').on('click', function(event) {
-			$ul = $(this).siblings('ul');
-			if ($ul.css('display') == 'none')
-				$ul.show();
-			else
-				$ul.hide();
-	        event.preventDefault();
-		});
+$(function() {
+	$('.tree a').on('click', function(event) {
+		event.preventDefault();
+		$ul = $(this).siblings('ul');
+		if ($ul.css('display') == 'none')
+			$ul.show();
+		else
+			$ul.hide();
 	});
-})();	
+});
+
 function toggle(X){
-	
 }
 
 // Get teacher's load info by ajax-GET query
@@ -39,13 +37,13 @@ function ajaxLoad(id) {
 //Get teacher's load info by ajax-GET query
 function ajaxAppoint(teacher_id) {
 	if (globalSelectedLoadID == 0) {
-		alert("�������� �� �������!");
+		alert("Группа не выбрана!");
 		return;
 	}
-	
 	$.getJSON("../AppointLoadTo", {"load_id": globalSelectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
         if (response.success) {
         	ajaxLoad(globalSelectedLoadID);
+    		$('#progressbar').trigger('refresh');
         } else {
         	alert(globalSelectedLoadID + " - error!");
         }

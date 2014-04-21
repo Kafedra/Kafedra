@@ -86,7 +86,7 @@ public class GetLoadInfo extends HttpServlet {
 					String nameDisc = res.getString(3);
 					int teacherID = res.getInt(4);
 					System.out.println("TeacherID = " + teacherID);
-					String fio = "не назначен: 0";
+					String fio = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 0";
 					if (teacherID != 0) {
 						fio = getTeacherById(teacherID);
 					}
@@ -122,13 +122,12 @@ public class GetLoadInfo extends HttpServlet {
 			String teacherName = res.getString(1);
 			System.out.println("TeacherID: " + teacherID + " | name: " + teacherName);
 			if (teacherName.trim().isEmpty()) {
-				teacherName = "<не назначен>";
+				teacherName = "<пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ>";
 			}
-
 			return teacherName;
 		}    	
 
-		return "<не назначен>";
+		return "<пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ>";
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}

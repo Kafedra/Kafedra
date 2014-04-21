@@ -16,10 +16,9 @@
 <link rel="stylesheet" href="../css/ProgressBar.css">
 <script src="../js/jquery-1.8.3.js"></script>
 <script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
-<!-- script src="../js/jquery.dataTables.min.js"></script>
-<script src="../js/table.js"></script>-->
 <script src="../js/script.js"></script>
 <script src="../js/tree.js"></script>
+<script src="../js/painting.js"></script>
 <script src="../js/appointment_scripts.js"></script>
 <script src="../js/top_block_script.js"></script>
 <script src="../js/ProgressBar.js"></script>
@@ -41,7 +40,7 @@
 			</fieldset>	
 			</td>		
 			
-			<td class="chart" style="vertical-align:top;">	
+			<td class="chart" >	
 			<fieldset>
 				<legend>Нагрузка</legend>
 				<%@ include file="blocks/chart_block.jsp" %><br/>

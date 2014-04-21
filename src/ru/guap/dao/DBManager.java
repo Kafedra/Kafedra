@@ -8,7 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
+import ru.guap.dao.DBManager;
 
 public class DBManager {
     public static final String DB_NAME = "kafedra";

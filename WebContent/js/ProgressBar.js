@@ -1,4 +1,4 @@
- $(function() {
+$(function() {
 	 var progressbar = $( "#progressbar" ),
 	 	progressLabel = $( ".progress-label" );
 	 
@@ -11,13 +11,24 @@
 			 progressLabel.text( "Complete!" );
 		 }
 	 });
-function progress() {
-	var val = progressbar.progressbar( "value" ) || 0;
-	progressbar.progressbar( "value", val + 1 );
-	if ( val < 99 ) {
-		setTimeout( progress, 100 );
+	 
+	 progressbar.on('refresh', refreshProgress);
+	 progressbar.trigger('refresh');
+	 			
+	 function refreshProgress(event){
+		$.getJSON( "../GetProgress", function(data) {
+			var $pb = $(event.target);
+			var value = (data.appointed/data.allRecords)*100;
+			$pb.progressbar("value", Math.round(value*10)/10);
+			})
+		.fail(function() {
+		    console.log( "error" );
+		  });
 	}
-		}
-	setTimeout( progress, 3000 );
 });
+
+
+
+	 
+
  
