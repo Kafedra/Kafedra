@@ -31,7 +31,7 @@
                 <td class="app">Контракт: <span id="app-ValueC"></span></td>
             </tr>
             <tr>
-                <td class="app">Итого: <span id="app-ValueTotal"></span></td>
+                <td class="app">Итого: <span id="app-Total"></span></td>
             </tr>
             <tr>
                 <td class="app">Преподаватель: <span id="app-Teacher"></span></td>

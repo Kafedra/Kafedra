@@ -44,8 +44,8 @@ javax.servlet.Servlet {
 		try {
 			ServletOutputStream outStream = response.getOutputStream();
 			ServletContext context  = getServletConfig().getServletContext();
-			String mimetype = context.getMimeType(filePath);
-
+			String mimetype = context.getMimeType(filePath);			
+			
 			// sets response content type
 			if (mimetype == null) {
 				mimetype = "application/octet-stream";
@@ -56,6 +56,9 @@ javax.servlet.Servlet {
 			String fileName = (new File(filePath)).getName() + ".xls";
 
 			// sets HTTP header
+			response.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+			response.setHeader("Pragma", "no-cache");
+			response.setHeader("Expires", "0");
 			response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
 			byte[] byteBuffer = new byte[BUFSIZE];
