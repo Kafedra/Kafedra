@@ -227,9 +227,9 @@ public class ReportFileGenerator {
 
 		PreparedStatement ps = null;
 		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT * FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (load_id=?)");
-		} else {
 			ps = cnn.prepareStatement("SELECT * FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (load_id=?)");
+		} else {
+			ps = cnn.prepareStatement("SELECT * FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (load_id=?)");
 		}
 
 		ps.setInt(1, TreeNodeFactory.LOAD_VERSION);
