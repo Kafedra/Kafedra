@@ -1,6 +1,4 @@
-$(function(){
-	$('.notappointed').each(function() {((Math.random()>0.5) ? $(this).removeClass('notappointed').addClass('appointed'):true);});
-	
+$(function(){	
 	paintStart();
 	$( "#btnappoint" ).click(function( event ) {
 		if (globalSelectedLoadID != 0) {

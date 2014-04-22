@@ -9,7 +9,7 @@
 </head>
 <body>
     <center>
-    Р—Р°РіСЂСѓР·РєР° .DBF С„Р°Р№Р»Р° СѓС‡РµР±РЅРѕРіРѕ РїР»Р°РЅР°
+    Укажите файл LONG*.DBF учебного плана:
     </center><br>
     <form action="<%=WebConfig.JSP_PREFIX %>/dbfupload" method="post" enctype="multipart/form-data">
         <input type="file" name="dbf"><br>

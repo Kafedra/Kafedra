@@ -12,11 +12,27 @@ $(function() {
 			duration: 1000
 		}
 	}); 
-	 
+
+	$( "#dialog_report" ).dialog({
+		autoOpen: false,
+		show: {
+			effect: "blind",
+			duration: 1000
+		},
+		hide: {
+			effect: "explode",
+			duration: 1000
+		}
+	});	
+	
 	$( "#opener" ).click(function() {
 		$( "#dialog" ).dialog( "open" );
 	});
 
+	$( "#opener_report" ).click(function() {
+		$( "#dialog_report" ).dialog( "open" );
+	});	
+	
 	$( ".but" ).button().click(function( event ) {
 		event.preventDefault();
 	});

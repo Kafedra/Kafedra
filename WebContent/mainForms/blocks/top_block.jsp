@@ -6,7 +6,7 @@
    			<li><a id="opener">Загрузить</a></li>
    		</ul>
    	</li>
-    <li><a href="#">Настройки</a></li>
+    <li><a id="opener_report">Скачать отчёт</a></li>
     <li><a href="#">Помощь</a></li>
     <li><a href="#">Учет/Нагрузка</a></li>
     <li><a href="#">Профиль</a></li>

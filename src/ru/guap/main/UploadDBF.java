@@ -37,7 +37,7 @@ import nl.knaw.dans.common.dbflib.ValueTooLargeException;
 import ru.guap.config.WebConfig;
 import ru.guap.dao.dbf.DBFConverter;
 
-@WebServlet(description = "A DBF file uploader", urlPatterns = { "/dbfupload" })
+@WebServlet(description = "A DBF file uploader", urlPatterns = { "/Kafedra/dbfupload" })
 @MultipartConfig
 public class UploadDBF extends HttpServlet {
     private static final long serialVersionUID = 1L;

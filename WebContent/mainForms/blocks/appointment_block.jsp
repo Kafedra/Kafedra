@@ -25,13 +25,13 @@
                 <td class="app">Количество часов:</td>
             </tr>
             <tr>
-                <td class="app">Бюджет: </td>
+                <td class="app">Бюджет: <span id="app-ValueG"></span></td>
             </tr>
             <tr>
-                <td class="app">Контракт: </td>
+                <td class="app">Контракт: <span id="app-ValueC"></span></td>
             </tr>
             <tr>
-                <td class="app">Итого: </td>
+                <td class="app">Итого: <span id="app-ValueTotal"></span></td>
             </tr>
             <tr>
                 <td class="app">Преподаватель: <span id="app-Teacher"></span></td>

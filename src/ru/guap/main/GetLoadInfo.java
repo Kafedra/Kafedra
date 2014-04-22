@@ -42,6 +42,7 @@ import nl.knaw.dans.common.dbflib.ValueTooLargeException;
 import ru.guap.config.WebConfig;
 import ru.guap.dao.DBManager;
 import ru.guap.dao.dbf.DBFConverter;
+import ru.guap.treeview.TreeNodeFactory;
 
 @WebServlet(description = "Get load info from DB by load ID", urlPatterns = { "/GetLoadInfo" })
 @MultipartConfig
@@ -49,7 +50,7 @@ public class GetLoadInfo extends HttpServlet {
 	private static final long serialVersionUID = 2L;
 
 	private static Connection cnn;
-	private static PreparedStatement psTeacher, psLoad;
+	private static PreparedStatement psLoad;
 
 	public GetLoadInfo() {
 		super();
@@ -57,8 +58,8 @@ public class GetLoadInfo extends HttpServlet {
 		cnn = DBManager.getInstance().getConnection();
 
 		try {
-			psTeacher = cnn.prepareStatement("SELECT fio FROM kafedra.teachers WHERE id = ?;");
-			psLoad = cnn.prepareStatement("SELECT `Group`, KindLoad, NameDisc, teachers_id FROM kafedra.kaf43 WHERE id = ?;");
+
+			psLoad = cnn.prepareStatement("SELECT `Group`, KindLoad, NameDisc, teachers_id, ValueG, ValueCO FROM kafedra.kaf43 WHERE id = ?;");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -83,24 +84,28 @@ public class GetLoadInfo extends HttpServlet {
 				while (res.next()) {
 					String group = res.getString(1);
 					String kind = res.getString(2);
+					kind = TreeNodeFactory.renameLoadKind(kind);
 					String nameDisc = res.getString(3);
 					int teacherID = res.getInt(4);
-					System.out.println("TeacherID = " + teacherID);
-					String fio = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 0";
+					String fio = "<не назначен>";
 					if (teacherID != 0) {
-						fio = getTeacherById(teacherID);
+						fio = DBManager.getInstance().getTeacherById(teacherID);
 					}
 
-					//response.setContentType("text/plain; charset=UTF-8");  
-					//response.setCharacterEncoding("UTF-8"); 
+					int valueG = res.getInt(5);
+					int valueC = res.getInt(6);
+					
 					PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
 					
-					String output = String.format("{ \"error\": false,"
-							+ " \"group\": \"%s\","
-							+ " \"kindload\": \"%s\","
-							+ " \"namedisc\": \"%s\","
-							+ " \"fio\": \"%s\""
-							+ "}", group, kind, nameDisc, fio);
+					String output = String.format("{ \"error\": false, "
+							+ " \"group\": \"%s\", "
+							+ " \"kindload\": \"%s\", "
+							+ " \"namedisc\": \"%s\", "
+							+ " \"fio\": \"%s\", "
+							+ " \"valueg\": \"%s\", "
+							+ " \"valuec\": \"%s\", "
+							+ " \"valuetotal\": \"%s\" "
+							+ "}", group, kind, nameDisc, fio, valueG, valueC, valueG + valueC);
 					
 					out.println(output);
 				}
@@ -113,22 +118,7 @@ public class GetLoadInfo extends HttpServlet {
 		}
 	}
 
-	private String getTeacherById(int teacherID) throws SQLException {
-		psTeacher.setInt(1, teacherID);
 
-		ResultSet res = psTeacher.executeQuery();
-
-		while (res.next()) {
-			String teacherName = res.getString(1);
-			System.out.println("TeacherID: " + teacherID + " | name: " + teacherName);
-			if (teacherName.trim().isEmpty()) {
-				teacherName = "<пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ>";
-			}
-			return teacherName;
-		}    	
-
-		return "<пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ>";
-	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 }
