@@ -43,7 +43,9 @@ $(function() {
 	});
 	
 	$( "#show" ).click(function( event ) {
+		$("a.notappointed,a.semiappointed,a.appointed").siblings('ul').hide();
 		$("a.notappointed,a.semiappointed").siblings('ul').show();
+		
 	});	
 });
 
