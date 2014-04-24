@@ -27,6 +27,9 @@ function ajaxLoad(id) {
         $('#app-Group').text(responseObject.group);
         $('#app-Teacher').text(responseObject.fio);
         
+        $('#app-ValueG').text(responseObject.valueg);
+        $('#app-ValueC').text(responseObject.valuec);
+        $('#app-Total').text(responseObject.valuetotal);
         globalSelectedLoadID = id;
 	}).fail(function( jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;
