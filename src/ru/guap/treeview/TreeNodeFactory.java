@@ -46,7 +46,7 @@ public class TreeNodeFactory {
 	static PreparedStatement appointmentCheck;
 	static final String appointmentCheckSql = "SELECT teachers_id FROM kafedra.kaf43 WHERE (id = ?) AND (load_id = ?)";
 
-	public static final int LOAD_VERSION = 1;
+	public static final int LOAD_VERSION = 4;
 	
 	public static Node getRootNode(boolean isAutumn) throws SQLException {
 		if (isAutumn) {
@@ -123,9 +123,10 @@ public class TreeNodeFactory {
 		ps.setInt(2, version);
 		
 		ResultSet res = ps.executeQuery();
-		
+		boolean isStreamFound = false;
 		// Found stream 
-		if (res.next()) {
+		while (res.next()) {
+			isStreamFound = true;
 			int nStream = res.getInt(1);
 			ArrayList<String> streamGroups = getGroupListForStream(cnn, isAutumn, nStream, disc.getNodeName(), version);
 
@@ -181,7 +182,9 @@ public class TreeNodeFactory {
 			for (String k : loadNodes.keySet()) {
 				streamNode.addChildNode(loadNodes.get(k));
 			}
-		} else { // Is not stream
+		}
+
+		if (!isStreamFound) { // Is not stream
 			ArrayList<String> discGroups = getGroupListForDisc(cnn, isAutumn, disc.getNodeName(), version);
 			
 			for (String group : discGroups) {

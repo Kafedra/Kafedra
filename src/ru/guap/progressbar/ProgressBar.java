@@ -42,6 +42,7 @@ import nl.knaw.dans.common.dbflib.ValueTooLargeException;
 import ru.guap.config.WebConfig;
 import ru.guap.dao.DBManager;
 import ru.guap.dao.dbf.DBFConverter;
+import ru.guap.treeview.TreeNodeFactory;
 
 @WebServlet(description = "Get count of all records and appointed records", urlPatterns = { "/GetProgress" })
 @MultipartConfig
@@ -60,8 +61,11 @@ public class ProgressBar extends HttpServlet {
 		cnn = DBManager.getInstance().getConnection();
 	
 		try {
-			psAll = cnn.prepareStatement("SELECT COUNT(id) FROM kafedra.kaf43;");
-			psApp = cnn.prepareStatement("SELECT COUNT(teachers_id) FROM kafedra.kaf43;");
+			psAll = cnn.prepareStatement("SELECT COUNT(id) FROM kafedra.kaf43 WHERE load_id = ?;");
+			psApp = cnn.prepareStatement("SELECT COUNT(teachers_id) FROM kafedra.kaf43 WHERE load_id=?;");
+			
+			psAll.setInt(1, TreeNodeFactory.LOAD_VERSION);
+			psApp.setInt(1, TreeNodeFactory.LOAD_VERSION);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
