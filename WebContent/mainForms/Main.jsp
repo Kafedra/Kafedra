@@ -5,7 +5,6 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Кафедра</title>
-<link rel="stylesheet" href="../css/tree.css">
 <link rel="stylesheet" href="../css/top_block_style.css">
 <link rel="stylesheet" href="../css/main_style.css">
 <link rel="stylesheet" href="../css/tree.css">

@@ -1,11 +1,4 @@
 <%@ page language="java" contentType="text/html" pageEncoding="UTF-8"%> 
-    <style>
-        .div{
-        id="tabs";
-        margin:0;
-        align
-        }
-    </style>
     <div id="tabs" >
         <ul>
              <li><a href="#tabs-1">Весенний</a></li>

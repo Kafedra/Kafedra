@@ -1,5 +1,14 @@
+#tabs .ui-tabs-panel{
+	padding:0;
+}
+
 ul:tree-parent {
     background: #fff url(../treeImg/tree-expandable.png) no-repeat;
+}
+
+ul.tree{
+	height: 634px;
+    overflow: auto;	
 }
 
 ul.tree, ul.tree ul { 
@@ -25,7 +34,6 @@ ul.tree ul {
 ul.tree li:last-child { 
  background: #fff url(../treeImg/picture-lastnode.png) no-repeat; 
 }
-
 
 ul.tree li { 
 	margin: 0; 
