@@ -4,20 +4,23 @@
     
     #if ($child.getChildren().size() != 0) 
     	<li class="parent-node" id="$child.getNodeId()">
-     #else 
+    #else 
      	<li class="last" id="$child.getNodeId()"> #end 
     	
-    #if ($child.getChildren().size() != 0) 
-    	<a href="#" onclick="toggle('$child.getNodeId()')"> 
-    #else 
-    	#if($child.isAppointed())
-    		#set( $class = "appointed" )
-    	#else
-    		#set( $class = "notappointed" )
-    	#end
-    	<a href="#" onclick="ajaxLoad('$child.getNodeId()')" class="$class">
-   	#end 
-    $child.getNodeName() </a>
+    #set($attr = "")
+	#if ($child.getChildren().size() == 0)
+	  	#if($child.isAppointed())
+	  		#set( $class = "appointed" )
+	   	#else
+	   		#set( $class = "notappointed" )
+	   	#end
+	   	#set( $attr = "onclick='ajaxLoad(&#39;$child.getNodeId()&#39;)' class='$class'")
+	#end 
+	<a href="#" $attr>$child.getNodeName()</a>
+	#if ($child.getChildren().size() != 0)
+  		<input type="checkbox" class="cb" name="$child.getNodeName()"/>
+  	#end
+  	
     #if ( $child.getChildren().size() != 0 )    
         <ul id="$child.getNodeId()" style="display:none" class="tree-parent">
         #set ( $node.children = $child.getChildren())

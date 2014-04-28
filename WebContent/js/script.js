@@ -44,9 +44,21 @@ $(function() {
 	
 	$( "#show" ).click(function( event ) {
 		$("a.notappointed,a.semiappointed,a.appointed").siblings('ul').hide();
-		$("a.notappointed,a.semiappointed").siblings('ul').show();
-		
+		$("a.notappointed,a.semiappointed").siblings('ul').show();		
 	});	
+	$( "#hide" ).click(function( event ) {
+		$("a.notappointed,a.semiappointed,a.appointed").siblings('ul').hide();		
+	});	
+	
+	$( "#showChecked" ).click(function( event ) {			
+		$(".cb:checked").parent().find('ul').show();
+	});
+	
+	$( "#hideChecked" ).click(function( event ) {			
+		$(".cb:checked").parent().find('ul').hide();
+	});
+	
+	$( "#funcMenu" ).menu({position: {at: "left bottom"}});
 });
 
 
