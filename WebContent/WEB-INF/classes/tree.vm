@@ -16,10 +16,11 @@
 	   	#end
 	   	#set( $attr = "onclick='ajaxLoad(&#39;$child.getNodeId()&#39;)' class='$class'")
 	#end 
-	<a href="#" $attr>$child.getNodeName()</a>
 	#if ($child.getChildren().size() != 0)
   		<input type="checkbox" class="cb" name="$child.getNodeName()"/>
   	#end
+	<a href="#" $attr>$child.getNodeName()</a>
+	
   	
     #if ( $child.getChildren().size() != 0 )    
         <ul id="$child.getNodeId()" style="display:none" class="tree-parent">

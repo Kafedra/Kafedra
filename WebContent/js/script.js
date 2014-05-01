@@ -1,6 +1,6 @@
 $(function() {
 	$( "#tabs" ).tabs();
-	
+	$( "#histo" ).tabs();
 	$( "#dialog" ).dialog({
 		autoOpen: false,
 		show: {
@@ -56,6 +56,9 @@ $(function() {
 	
 	$( "#hideChecked" ).click(function( event ) {			
 		$(".cb:checked").parent().find('ul').hide();
+	});
+	$( "#clearChecked" ).click(function( event ) {			
+		$(".cb:checked").removeAttr("checked");
 	});
 	
 	$( "#funcMenu" ).menu({position: {at: "left bottom"}});

@@ -39,10 +39,10 @@
 			</td>		
 			
 			<td class="chart" >	
-			<fieldset>
+			<fieldset style="height:500px">
 				<legend>Нагрузка</legend>
-				<%@ include file="blocks/chart_block.jsp" %><br/>
-				<%@ include file="blocks/ProgressBar.jsp" %><br/>
+				<%@ include file="blocks/chart_block.jsp" %>
+				<%@ include file="blocks/ProgressBar.jsp" %>
 				<%@ include file="blocks/appointment_block.jsp" %>  
 			</fieldset>	
             </td>
