@@ -40,8 +40,8 @@ $(function() {
 	$( "#btnappoint" ).click(function( event ) {
 		var val = $('#combobox option:selected').val();
 		ajaxAppoint(val);
-		$('#percent').find('img').attr('src', '../PercentHistohram?'+Math.random());
-		$('#time').find('img').attr('src', '../HoursHistohram?'+Math.random());
+		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
+		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
 	});
 	
 	$( "#show" ).click(function( event ) {

@@ -16,34 +16,21 @@ import javax.servlet.http.HttpServletResponse;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.CategoryAxis;
+import org.jfree.chart.axis.CategoryLabelPositions;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import ru.guap.dao.DBManager;
 import ru.guap.treeview.TreeNodeFactory;
 
-@WebServlet("/HoursHistohram")
-public class HoursHistohram extends HttpServlet {
-	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */	
-	private static Connection cnn;
-	private static PreparedStatement countValues,teacherData;//(1)Id,Имя - преподавателя (2)контракт,бюджет,
-	
-    public HoursHistohram() {
-        super();
-        cnn = DBManager.getInstance().getConnection();
-        try {
-        	countValues=cnn.prepareStatement("SELECT sum(ValueG),sum(ValueCO) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ? ");
-        	teacherData=cnn.prepareStatement("SELECT * FROM kafedra.teachers");        	
+@WebServlet("/HoursBarChart")
+public class HoursBarChart extends BarChart {
 
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-        
+	
+    public HoursBarChart() {
+        super();
     }
 
 	/**
@@ -54,18 +41,22 @@ public class HoursHistohram extends HttpServlet {
     		OutputStream out = response.getOutputStream();
     		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
     		try {
-    			int teachId = -1; //init
-    			countValues.setInt(1,TreeNodeFactory.LOAD_VERSION);
-    			ResultSet tData=teacherData.executeQuery();    			
-    			while(tData.next()){
-    				teachId=tData.getInt(1);
-    				countValues.setInt(2,teachId);
-    				ResultSet allValues=countValues.executeQuery();
-    				if(allValues.next()){
-	    				dataset.addValue(allValues.getInt(2), "Контракт", tData.getString(2));
-	    				dataset.addValue(allValues.getInt(1), "Бюджет", tData.getString(2));    			
+    			int teachId;
+    			
+    			countValues.setInt(1, TreeNodeFactory.LOAD_VERSION);
+    			ResultSet tData = teacherData.executeQuery();    			
+    			
+    			while(tData.next()) {
+    				teachId = tData.getInt(1);
+    				countValues.setInt(2, teachId);
+    				ResultSet allValues = countValues.executeQuery();
+    				
+    				if(allValues.next()) {
+	    				dataset.addValue(allValues.getInt(2), STR_CONTRACT, tData.getString(2));
+	    				dataset.addValue(allValues.getInt(1), STR_BUDGET, tData.getString(2));    			
 	    			}
     			}
+    			
     			JFreeChart chart = ChartFactory.createBarChart(
 		    		"Нагрузка преподавателей в часах",
 		    		"Соотношения",
@@ -74,8 +65,19 @@ public class HoursHistohram extends HttpServlet {
 		    		PlotOrientation.VERTICAL,
 		    		true, true, false
 	    		);
+    			
+    			CategoryAxis ca = new CategoryAxis();
+    			ca.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+    			ca.setMaximumCategoryLabelWidthRatio(5f);
+    			
+    			ca.setLowerMargin(0);
+    			ca.setCategoryMargin(0);
+    			ca.setUpperMargin(0);      			
+    			
+    			chart.getCategoryPlot().setDomainAxis(ca);
+    			
 	    		response.setContentType("image/png");
-	    		ChartUtilities.writeChartAsPNG(out, chart, 580, 270);
+	    		ChartUtilities.writeChartAsPNG(out, chart, BLOCK_WIDTH, BLOCK_HEIGHT);
 	    		}
     		catch (Exception e) {
 	    		System.err.println(e.toString());
