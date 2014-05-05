@@ -5,9 +5,10 @@
 		<li><a href="#time">В часах</a></li>
 	</ul>
 	<div id="percent">
-		будут проценты
+		<img src="../PercentHistohram">
 	</div>
 	<div id="time">
-		будут часы
+	 	<img src="../HoursHistohram"> 
+		
 	</div>
 </div>
