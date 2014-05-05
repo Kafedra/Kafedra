@@ -2,6 +2,10 @@ package ru.guap.histohram;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,9 +16,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import ru.guap.dao.DBManager;
+import ru.guap.treeview.TreeNodeFactory;
 
 @WebServlet("/PercentHistohram")
 public class PercentHistohram extends HttpServlet {
@@ -22,10 +30,20 @@ public class PercentHistohram extends HttpServlet {
        
     /**
      * @see HttpServlet#HttpServlet()
-     */
+     */	
+	private static Connection cnn;
+	private static PreparedStatement countValues,teacherData;//(1)Id,Имя - преподавателя (2)контракт,бюджет,
+	
     public PercentHistohram() {
         super();
-        // TODO Auto-generated constructor stub
+        cnn = DBManager.getInstance().getConnection();
+        try {
+        	countValues=cnn.prepareStatement("SELECT sum(ValueG),sum(ValueCO),sum(ValueEP) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ? ");
+        	teacherData=cnn.prepareStatement("SELECT * FROM kafedra.teachers");      				
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        
     }
 
 	/**
@@ -34,47 +52,58 @@ public class PercentHistohram extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     		throws ServletException, IOException {
     		OutputStream out = response.getOutputStream();
-    		try {
     		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    		dataset.addValue(10.0, "S1", "C1");
-    		dataset.addValue(4.0, "S1", "C2");
-    		dataset.addValue(15.0, "S1", "C3");
-    		dataset.addValue(14.0, "S1", "C4");
-    		dataset.addValue(-5.0, "S2", "C1");
-    		dataset.addValue(-7.0, "S2", "C2");
-    		dataset.addValue(14.0, "S2", "C3");
-    		dataset.addValue(-3.0, "S2", "C4");
-    		dataset.addValue(6.0, "S3", "C1");
-    		dataset.addValue(17.0, "S3", "C2");
-    		dataset.addValue(-12.0, "S3", "C3");
-    		dataset.addValue( 7.0, "S3", "C4");
-    		dataset.addValue(7.0, "S4", "C1");
-    		dataset.addValue(15.0, "S4", "C2");
-    		dataset.addValue(11.0, "S4", "C3");
-    		dataset.addValue(0.0, "S4", "C4");
-    		dataset.addValue(-8.0, "S5", "C1");
-    		dataset.addValue(-6.0, "S5", "C2");
-    		dataset.addValue(10.0, "S5", "C3");
-    		dataset.addValue(-9.0, "S5", "C4");
-    		dataset.addValue(9.0, "S6", "C1");
-    		dataset.addValue(8.0, "S6", "C2");
-    		dataset.addValue(null, "S6", "C3");
-    		JFreeChart chart = ChartFactory.createBarChart(
-    		"Bar Chart",
-    		"Category",
-    		"Value",
-    		dataset,
-    		PlotOrientation.VERTICAL,
-    		true, true, false
-    		);
-    		response.setContentType("image/png");
-    		ChartUtilities.writeChartAsPNG(out, chart, 400, 300);
+    		try {
+    			int teachId = -1; //init
+    			int aVgO; //budget for cheking to zero
+    			int aVcO; //contract for cheking to zero
+    			int mustBe; // how many must be
+    			countValues.setInt(1,TreeNodeFactory.LOAD_VERSION);
+    			ResultSet tData=teacherData.executeQuery();    			
+    			while(tData.next()) {
+    				teachId=tData.getInt(1);
+    				countValues.setInt(2,teachId);
+    				ResultSet allValues=countValues.executeQuery();    				
+    				if(allValues.next()) {
+    				    aVgO =allValues.getInt(2); //budget for cheking to zero
+    				    aVcO = allValues.getInt(1); //contract for cheking to zero
+    				    mustBe = allValues.getInt(3);
+    				    
+    					if((aVgO <= 0 && aVcO <= 0) || mustBe<=0) {
+    						dataset.addValue(0, "Контракт", tData.getString(2));
+    	    				dataset.addValue(0, "Бюджет", tData.getString(2));   						
+    	    			}
+    					else if(aVgO <= 0){
+    						dataset.addValue(0, "Контракт", tData.getString(2));
+    						dataset.addValue(( aVcO*100)/mustBe, "Бюджет", tData.getString(2)); 
+    					}
+    					else if (aVcO <= 0){
+
+    						dataset.addValue((aVgO*100)/mustBe, "Контракт", tData.getString(2));
+    						dataset.addValue(0, "Бюджет", tData.getString(2));     						
+    					}
+    					else {
+    						dataset.addValue((aVgO*100)/mustBe, "Контракт", tData.getString(2));
+    						dataset.addValue(( aVcO*100)/mustBe, "Бюджет", tData.getString(2)); 
+    					}
+    				}}
+    			JFreeChart chart = ChartFactory.createBarChart(
+		    		"Нагрузка преподавателей в процентах",
+		    		"Соотношения",
+		    		"Проценты",
+		    		dataset,
+		    		PlotOrientation.VERTICAL,
+		    		true, true, false
+	    		);
+	    		response.setContentType("image/png");
+	    		ChartUtilities.writeChartAsPNG(out, chart, 580, 270);
+	    		
     		}
     		catch (Exception e) {
-    		System.err.println(e.toString());
-    		}
+	    		System.err.println(e.toString());
+	    		}
     		finally {
-    		out.close();
+    			out.close();
     		}
     		}
 

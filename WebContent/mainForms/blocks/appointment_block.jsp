@@ -42,7 +42,7 @@
                 <legend>Область заполнения данных:</legend>
                 <table>
                     <tr>
-                        <td style="width:1px">Выбор преподавателя:</td>   
+                        <td>Выбор преподавателя:</td>   
                             <td>
                                 <select id="combobox" style="width:3in">
                                 <sql:setDataSource var="ds" driver="com.mysql.jdbc.Driver" url="<%=DBManager.URL %>" user="<%=DBManager.DB_LOGIN %>" password="<%=DBManager.DB_PASS %>"/>

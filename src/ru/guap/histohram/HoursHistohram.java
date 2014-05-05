@@ -2,6 +2,10 @@ package ru.guap.histohram;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,16 +19,31 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import ru.guap.dao.DBManager;
+import ru.guap.treeview.TreeNodeFactory;
+
 @WebServlet("/HoursHistohram")
 public class HoursHistohram extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
-     */
+     */	
+	private static Connection cnn;
+	private static PreparedStatement countValues,teacherData;//(1)Id,Имя - преподавателя (2)контракт,бюджет,
+	
     public HoursHistohram() {
         super();
-        // TODO Auto-generated constructor stub
+        cnn = DBManager.getInstance().getConnection();
+        try {
+        	countValues=cnn.prepareStatement("SELECT sum(ValueG),sum(ValueCO) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ? ");
+        	teacherData=cnn.prepareStatement("SELECT * FROM kafedra.teachers");        	
+
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+        
     }
 
 	/**
@@ -33,60 +52,36 @@ public class HoursHistohram extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
     		throws ServletException, IOException {
     		OutputStream out = response.getOutputStream();
-    		try {
     		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    		dataset.addValue(10.0, "S1", "C1");
-    		dataset.addValue(4.0, "S1", "C2");
-    		dataset.addValue(15.0, "S1", "C3");
-    		dataset.addValue(14.0, "S1", "C4");
-    		dataset.addValue(-5.0, "S2", "C1");
-    		dataset.addValue(-7.0, "S2", "C2");
-    		dataset.addValue(14.0, "S2", "C3");
-    		dataset.addValue(-3.0, "S2", "C4");
-    		dataset.addValue(6.0, "S3", "C1");
-    		dataset.addValue(17.0, "S3", "C2");
-    		dataset.addValue(-12.0, "S3", "C3");
-    		dataset.addValue( 7.0, "S3", "C4");
-    		dataset.addValue(7.0, "S4", "C1");
-    		dataset.addValue(15.0, "S4", "C2");
-    		dataset.addValue(11.0, "S4", "C3");
-    		dataset.addValue(0.0, "S4", "C4");
-    		dataset.addValue(-8.0, "S5", "C1");
-    		dataset.addValue(-6.0, "S5", "C2");
-    		dataset.addValue(10.0, "S5", "C3");
-    		dataset.addValue(-9.0, "S5", "C4");
-    		dataset.addValue(9.0, "S6", "C1");
-    		dataset.addValue(8.0, "S6", "C2");
-    		dataset.addValue(null, "S6", "C3");
-    		dataset.addValue(6.0, "S6", "C4");
-    		dataset.addValue(-10.0, "S7", "C1");
-    		dataset.addValue(9.0, "S7", "C2");
-    		dataset.addValue(7.0, "S7", "C3");
-    		dataset.addValue(7.0, "S7", "C4");
-    		dataset.addValue(11.0, "S8", "C1");
-    		dataset.addValue(13.0, "S8", "C2");
-    		dataset.addValue(9.0, "S8", "C3");
-    		dataset.addValue(9.0, "S8", "C4");
-    		dataset.addValue(-3.0, "S9", "C1");
-    		dataset.addValue(7.0, "S9", "C2");
-    		dataset.addValue(11.0, "S9", "C3");
-    		dataset.addValue(-10.0, "S9", "C4");
-    		JFreeChart chart = ChartFactory.createBarChart(
-    		"Bar Chart",
-    		"Category",
-    		"Value",
-    		dataset,
-    		PlotOrientation.VERTICAL,
-    		true, true, false
-    		);
-    		response.setContentType("image/png");
-    		ChartUtilities.writeChartAsPNG(out, chart, 400, 300);
-    		}
+    		try {
+    			int teachId = -1; //init
+    			countValues.setInt(1,TreeNodeFactory.LOAD_VERSION);
+    			ResultSet tData=teacherData.executeQuery();    			
+    			while(tData.next()){
+    				teachId=tData.getInt(1);
+    				countValues.setInt(2,teachId);
+    				ResultSet allValues=countValues.executeQuery();
+    				if(allValues.next()){
+	    				dataset.addValue(allValues.getInt(2), "Контракт", tData.getString(2));
+	    				dataset.addValue(allValues.getInt(1), "Бюджет", tData.getString(2));    			
+	    			}
+    			}
+    			JFreeChart chart = ChartFactory.createBarChart(
+		    		"Нагрузка преподавателей в часах",
+		    		"Соотношения",
+		    		"Часы",
+		    		dataset,
+		    		PlotOrientation.VERTICAL,
+		    		true, true, false
+	    		);
+	    		response.setContentType("image/png");
+	    		ChartUtilities.writeChartAsPNG(out, chart, 580, 270);
+	    		}
     		catch (Exception e) {
-    		System.err.println(e.toString());
-    		}
+	    		System.err.println(e.toString());
+	    		}
     		finally {
-    		out.close();
+    			out.close();
     		}
     		}
 

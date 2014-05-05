@@ -8,7 +8,6 @@
 		<img src="../PercentHistohram">
 	</div>
 	<div id="time">
-	 	<img src="../HoursHistohram"> 
-		
+	 	<img src="../HoursHistohram"> 		
 	</div>
 </div>

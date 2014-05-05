@@ -15,7 +15,24 @@
           </ul>
 	</div>
     </div>
-    <input id="hide" type="button" class="but" value="Скрыть всё"/>
-	<input id="showChecked" type="button" class="but" value="Раскрыть выбранные"/>
-	<input id="hideChecked" type="button" class="but" value="Скрыть выбранные"/>
-	<input id="clearChecked" type="button" class="but" value="Очистить выбранные"/>
+    <table>
+    	<tr>
+    		<td>
+    			<input id="hide" type="button" class="but" value="       Скрыть всё        "/>
+    		</td>
+    		<td>
+    			<input id="showChecked" type="button" class="but" value="Раскрыть выбранные"/>
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			<input id="hideChecked" type="button" class="but" value="Скрыть выбранные"/>
+    		</td>
+    		<td>
+    			<input id="clearChecked" type="button" class="but" value="Очистить выбранные"/>
+    		</td>
+    	</tr>
+    </table>
+	
+	
+	
