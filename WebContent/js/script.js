@@ -1,6 +1,6 @@
 $(function() {
 	$( "#tabs" ).tabs();
-	
+	$( "#histo" ).tabs();
 	$( "#dialog" ).dialog({
 		autoOpen: false,
 		show: {
@@ -40,6 +40,8 @@ $(function() {
 	$( "#btnappoint" ).click(function( event ) {
 		var val = $('#combobox option:selected').val();
 		ajaxAppoint(val);
+		$('#percent').find('img').attr('src', '../PercentHistohram?'+Math.random());
+		$('#time').find('img').attr('src', '../HoursHistohram?'+Math.random());
 	});
 	
 	$( "#show" ).click(function( event ) {
@@ -56,6 +58,9 @@ $(function() {
 	
 	$( "#hideChecked" ).click(function( event ) {			
 		$(".cb:checked").parent().find('ul').hide();
+	});
+	$( "#clearChecked" ).click(function( event ) {			
+		$(".cb:checked").removeAttr("checked");
 	});
 	
 	$( "#funcMenu" ).menu({position: {at: "left bottom"}});

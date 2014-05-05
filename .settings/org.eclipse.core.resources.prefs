@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/web.xml=Cp1251
 encoding//WebContent/js/tree.js=UTF-8
 encoding//WebContent/mainForms/Upload.jsp=cp1251
 encoding//WebContent/mainForms/blocks/dialogs.jsp=cp1251

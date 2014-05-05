@@ -11,7 +11,7 @@ $(function() {
 			 progressLabel.text( "Complete!" );
 		 }
 	 });
-	 
+	 	
 	 progressbar.on('refresh', refreshProgress);
 	 progressbar.trigger('refresh');
 	 			

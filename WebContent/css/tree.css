@@ -7,7 +7,7 @@ ul:tree-parent {
 }
 
 ul.tree{
-	height: 634px;
+	height: 568px;
     overflow: auto;	
 }
 
@@ -32,7 +32,7 @@ ul.tree ul {
  }
 
 ul.tree li:last-child { 
- background: #fff url(../treeImg/picture-lastnode.png) no-repeat; 
+ background: #EBE9DE url(../treeImg/picture-lastnode.png) no-repeat; 
 }
 
 ul.tree li { 
