@@ -1,4 +1,4 @@
-package ru.guap.histohram;
+package ru.guap.barchart;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -30,8 +30,16 @@ import ru.guap.treeview.TreeNodeFactory;
 @WebServlet("/PercentBarChart")
 public class PercentBarChart extends BarChart {
 
+	private PreparedStatement countValues;
+	
 	public PercentBarChart() {
 		super();
+		
+    	try {
+			this.countValues = cnn.prepareStatement("SELECT sum(ValueG), sum(ValueCO), sum(ValueEP) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ?");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -52,8 +60,8 @@ public class PercentBarChart extends BarChart {
 
 			while(tData.next()) {
 				teachId = tData.getInt(1);
-				countValues.setInt(2, teachId);
-				ResultSet allValues = countValues.executeQuery();
+				this.countValues.setInt(2, teachId);
+				ResultSet allValues = this.countValues.executeQuery();
 
 				if(allValues.next()) {
 					aVgO = allValues.getInt(2);
@@ -104,7 +112,7 @@ public class PercentBarChart extends BarChart {
 
 		}
 		catch (Exception e) {
-			System.err.println(e.toString());
+			e.printStackTrace();
 		}
 		finally {
 			out.close();

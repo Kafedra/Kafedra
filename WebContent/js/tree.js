@@ -48,7 +48,7 @@ function ajaxAppoint(teacher_id) {
         	ajaxLoad(globalSelectedLoadID);
     		$('#progressbar').trigger('refresh');
         } else {
-        	alert(globalSelectedLoadID + " - error!");
+        	alert(response.reason + " - error!");
         }
 	}).fail(function( jqxhr, textStatus, error ) {
 		var err = textStatus + ", " + error;

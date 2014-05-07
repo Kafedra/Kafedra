@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.text.Format;
 import java.util.Iterator;
 import java.util.List;
@@ -69,11 +70,16 @@ public class AppointLoadTo extends HttpServlet {
 
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
 		
-		if (loadID <= 0 || teacherID <= 0) {
+		if (loadID <= 0 || teacherID < 0) {
 			out.println("{ \"success\": false, \"reason\": \"you are an idiot\" }");
 		} else {
 			try {
-				psUpdateLoad.setInt(1, teacherID);
+				if (teacherID == 0) {
+					psUpdateLoad.setNull(1, Types.INTEGER);
+				} else {
+					psUpdateLoad.setInt(1, teacherID);
+				}
+				
 				psUpdateLoad.setInt(2, loadID);
 				
 				psUpdateLoad.executeUpdate();

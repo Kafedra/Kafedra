@@ -1,4 +1,4 @@
-package ru.guap.histohram;
+package ru.guap.barchart;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,9 +28,17 @@ import ru.guap.treeview.TreeNodeFactory;
 @WebServlet("/HoursBarChart")
 public class HoursBarChart extends BarChart {
 
+	private PreparedStatement countValues;
 	
     public HoursBarChart() {
         super();
+        
+    	try {
+			this.countValues = cnn.prepareStatement("SELECT sum(ValueG), sum(ValueCO) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ?");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		};
     }
 
 	/**

@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 public class TreeNodeFactory {
@@ -37,16 +38,16 @@ public class TreeNodeFactory {
 	static PreparedStatement selectDiscNamesSpring;
 	static String selectDiscNamesSpringSql = "SELECT DISTINCT NameDisc FROM kafedra.kaf43 WHERE ((mod(Nsem, 2) = 0) AND (load_id = ?))";
 	
-	static PreparedStatement selectGroupsAndLoadsAuthum;
-	static String selectGroupsAndLoadsAuthumSql = "SELECT id, Nstream, `Group`, KindLoad, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND load_id=?)";
-	
-	static PreparedStatement selectGroupsAndLoadsSpring;
-	static String selectGroupsAndLoadsSpringSql = "SELECT id, Nstream, `Group`, KindLoad, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND load_id=?)";
+	static PreparedStatement selectGroupsAuthum;
+	static String selectGroupsAuthumSql = "SELECT `Group`, NStream, KindLoad, id, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (load_id = ?) AND (NameDisc = ?)";
+
+	static PreparedStatement selectGroupsSpring;
+	static String selectGroupsSpringSql = "SELECT `Group`, NStream, KindLoad, id, teachers_id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (load_id = ?) AND (NameDisc = ?)";	
 	
 	static PreparedStatement appointmentCheck;
 	static final String appointmentCheckSql = "SELECT teachers_id FROM kafedra.kaf43 WHERE (id = ?) AND (load_id = ?)";
 
-	public static final int LOAD_VERSION = 4;
+	public static final int LOAD_VERSION = 1;
 	
 	public static Node getRootNode(boolean isAutumn) throws SQLException {
 		if (isAutumn) {
@@ -78,250 +79,120 @@ public class TreeNodeFactory {
 				selectDiscNamesAuthum = cnn.prepareStatement(selectDiscNamesAuthumSql);
 			}
 			
-			if (selectGroupsAndLoadsAuthum == null) {
-				selectGroupsAndLoadsAuthum = cnn.prepareStatement(selectGroupsAndLoadsAuthumSql);
-			}
-			
 			getDiscNames(selectDiscNamesAuthum, discNames, version);
 		} else {
 			if (selectDiscNamesSpring == null) {
 				selectDiscNamesSpring = cnn.prepareStatement(selectDiscNamesSpringSql);
 			}
-			
-			if (selectGroupsAndLoadsSpring == null) {
-				selectGroupsAndLoadsSpring = cnn.prepareStatement(selectGroupsAndLoadsSpringSql);
-			}
-			
+						
 			getDiscNames(selectDiscNamesSpring, discNames, version);			
 		}
 		
 		// Add disciplines in tree
 		for (String discName : discNames) {
+			
+			
 			Node node = new Node(new Integer(discName.hashCode()).toString(), discName);
 			node.setIsSelected(0);
 			node.setErrorDescription("");
 			
-			setGroupsAndLoadsToDisc(node, cnn, isAutumn, version);
+			ArrayList<GroupLoadItem> groupsList = getGroupsForDiscipline(discName, version, isAutumn);
+			
+			GroupStream zeroStream = new GroupStream(true, 0);
+			HashMap<Integer, GroupStream> nonZeroStreams = new HashMap<>();
+			
+			for (GroupLoadItem item : groupsList) {
+				if (item.streamId == 0) {
+					zeroStream.addGroupItem(item);
+				} else {
+					// Try to find stream if already added
+					GroupStream stream = nonZeroStreams.get(item.streamId);
+					
+					// If stream already added, then add item to it
+					if (stream != null) {
+						stream.addGroupItem(item);
+					} else {
+						// If not, create a new stream, save it and add item to new stream
+						stream = new GroupStream(false, item.streamId);
+						stream.addGroupItem(item);
+						
+						nonZeroStreams.put(item.streamId, stream);
+					}
+				}
+			}
+			
+			// Transform streams to nodes
+			for (GroupStream stream : nonZeroStreams.values()) {
+				addStreamToDiscNode(stream, node);
+			}
+			
+			addStreamToDiscNode(zeroStream, node);
 			
 			root.addChildNode(node);
 		}
 		
 		return root;
 	}
-	
-	private static void setGroupsAndLoadsToDisc(Node disc, Connection cnn, boolean isAutumn, int version) throws SQLException {
-		Hashtable<Integer, String> streams = new Hashtable<>(); // Stream data by stream id
+
+	private static void addStreamToDiscNode(GroupStream stream, Node discNode) {
+		Node streamNode = new Node(new Integer(stream.getId()).toString(), stream.toString());
+		streamNode.setIsSelected(0);
+		streamNode.setAppointed(false);
+		streamNode.setLoadNode(false);
 		
-		PreparedStatement ps;
-		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT DISTINCT Nstream FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc=? AND Nstream != 0 AND load_id=?)");
-		} else {
-			ps = cnn.prepareStatement("SELECT DISTINCT Nstream FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc=? AND Nstream != 0 AND load_id=?)");
+		HashMap<String, Node> loadKindsNodes = new HashMap<>();
+		
+		for (GroupLoadItem i : stream.getItems()) {
+			Node groupLoadNode = new Node(new Integer(i.id).toString(), i.name);
+			groupLoadNode.setLoadNode(true);
+			groupLoadNode.setAppointed(i.isAppointed);
+			groupLoadNode.setIsSelected(0);
+			
+			Node loadKindNode = loadKindsNodes.get(i.kindLoad);
+			
+			if (loadKindNode == null) {
+				loadKindNode = new Node("0", loadKindRenamingTable.get(i.kindLoad));
+				loadKindsNodes.put(i.kindLoad, loadKindNode);
+				
+				streamNode.addChildNode(loadKindNode);
+			}
+			
+			loadKindNode.addChildNode(groupLoadNode);
 		}
 		
-		ps.setString(1, disc.getNodeName());
-		ps.setInt(2, version);
-		
-		ResultSet res = ps.executeQuery();
-		boolean isStreamFound = false;
-		// Found stream 
-		while (res.next()) {
-			isStreamFound = true;
-			int nStream = res.getInt(1);
-			ArrayList<String> streamGroups = getGroupListForStream(cnn, isAutumn, nStream, disc.getNodeName(), version);
-
-			StringBuilder streamString = new StringBuilder("Поток: ");
-
-			for (int i = 0; i < streamGroups.size(); i++) {
-				streamString.append(streamGroups.get(i));
-				
-				if (i + 1 != streamGroups.size()) {
-					streamString.append(", ");
-				}
-			}
-			
-			Node streamNode = new Node(new Integer(nStream).toString(), streamString.toString());
-			disc.addChildNode(streamNode);
-			
-			Hashtable<String, Node> loadNodes = new Hashtable<>();
-			
-			for (String group : streamGroups) {
-				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAutumn, disc.getNodeName(), group, version);
-				
-				for (String kind : loadKinds) {					
-					if (loadNodes.containsKey(kind)) {	
-						int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version);
-						
-						if (loadID != 0) {
-							Node groupLeaf = new Node(new Integer(loadID).toString(), group);
-							groupLeaf.setLoadNode(true);
-							groupLeaf.setAppointed(isLoadAppointed(loadID, version));
-							
-							loadNodes.get(kind).addChildNode(groupLeaf);
-						} else {
-							System.out.println("LoadID is ZERO! for " + group + " " + kind + " " + disc.getNodeName());
-						}
-					} else {
-						int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version);
-						
-						if (loadID != 0) {
-							Node loadKindNode = new Node("0", loadKindRenamingTable.get(kind));
-							loadNodes.put(kind, loadKindNode);
-							
-							Node groupLeaf = new Node(new Integer(loadID).toString(), group);
-							groupLeaf.setLoadNode(true);
-							groupLeaf.setAppointed(isLoadAppointed(loadID, version));
-							loadNodes.get(kind).addChildNode(groupLeaf);
-						} else {
-							System.out.println("LoadID is ZERO! for " + group + " " + kind + " " + disc.getNodeName());
-						}						
-					}
-				}
-			}
-			
-			for (String k : loadNodes.keySet()) {
-				streamNode.addChildNode(loadNodes.get(k));
-			}
-		}
-
-		if (!isStreamFound) { // Is not stream
-			ArrayList<String> discGroups = getGroupListForDisc(cnn, isAutumn, disc.getNodeName(), version);
-			
-			for (String group : discGroups) {
-				Node groupNode = new Node("0", group);
-				
-				ArrayList<String> loadKinds = getLoadKindsForDiscAndGroup(cnn, isAutumn, disc.getNodeName(), group, version);
-				
-				for (String kind : loadKinds) {
-					int loadID = getLoadIdByGroupKindDisc(cnn, isAutumn, group, kind, disc.getNodeName(), version);
-					boolean isAppointed = isLoadAppointed(loadID, version);
-							
-					Node kindNode = new Node(new Integer(loadID).toString(), loadKindRenamingTable.get(kind));
-					kindNode.setAppointed(isAppointed);
-					
-					groupNode.addChildNode(kindNode);
-				}
-				
-				disc.addChildNode(groupNode);
-			}
-		}
+		discNode.addChildNode(streamNode);
 	}
 	
-	private static int getLoadIdByGroupKindDisc(Connection cnn, boolean isAutumn, String group, String kind, String discName, int version) throws SQLException {
-		int result = 0;
+	private static ArrayList<GroupLoadItem> getGroupsForDiscipline(String discName, int version, boolean isAuthumn) throws SQLException {
+		ArrayList<GroupLoadItem> result = new ArrayList<>();
+		
+		Connection cnn = DBManager.getInstance().getConnection();
 		
 		PreparedStatement ps;
-		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
+		if (isAuthumn) {
+			ps = selectGroupsAuthum;
+			
+			if (ps == null) {
+				ps = cnn.prepareStatement(selectGroupsAuthumSql);
+			}
 		} else {
-			ps = cnn.prepareStatement("SELECT id FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND `Group` = ? AND KindLoad = ? AND load_id = ?)");
+			ps = selectGroupsSpring;
+			
+			if (ps == null) {
+				ps = cnn.prepareStatement(selectGroupsSpringSql);
+			}
 		}
-
-		ps.setString(1, discName);
-		ps.setString(2, group);
-		ps.setString(3, kind);
-		ps.setInt(4, version);
 		
-		ResultSet res = ps.executeQuery();
+		ps.setInt(1, version);
+		ps.setString(2, discName);
 		
-		while (res.next()) {
-			result = res.getInt(1);
+		ResultSet rs = ps.executeQuery();
+		
+		while (rs.next()) {
+			result.add(new GroupLoadItem(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5) != 0));
 		}
 		
 		return result;		
-	}
-	
-	private static boolean isLoadAppointed(int loadId, int version) throws SQLException {
-		Connection cnn = DBManager.getInstance().getConnection();
-		
-		if (appointmentCheck == null) {
-			appointmentCheck = cnn.prepareStatement(appointmentCheckSql);
-		}
-		
-		appointmentCheck.setInt(1, loadId);
-		appointmentCheck.setInt(2, version);
-		
-		ResultSet res = appointmentCheck.executeQuery();
-		
-		if (res.next()) {
-			//System.out.println("isAppointed: " + loadId + " -> " + (res.getInt(1) != 0));
-			return res.getInt(1) != 0;
-		}
-		
-		return false;
-	}
-	
-	private static ArrayList<String> getLoadKindsForDiscAndGroup(Connection cnn, boolean isAutumn, String discName, String group, int version) throws SQLException {
-		ArrayList<String> result = new ArrayList<String>();
-		
-		PreparedStatement ps;
-		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT DISTINCT KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND `Group` = ? AND load_id = ?)");
-		} else {
-			ps = cnn.prepareStatement("SELECT DISTINCT KindLoad FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND `Group` = ? AND load_id = ?)");
-		}
-
-		ps.setString(1, discName);
-		ps.setString(2, group);
-		ps.setInt(3, version);		
-		
-		ResultSet res = ps.executeQuery();
-		
-		while (res.next()) {
-			String kindLoad = res.getString(1);
-			
-			result.add(kindLoad);
-		}
-		
-		return result;
-	}
-	
-	private static ArrayList<String> getGroupListForDisc(Connection cnn, boolean isAutumn, String discName, int version) throws SQLException {
-		PreparedStatement ps;
-		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND load_id = ?)");
-		} else {
-			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND load_id = ?)");
-		}
-
-		ps.setString(1, discName);
-		ps.setInt(2, version);
-		
-		ps.execute();
-	    ResultSet res = ps.getResultSet();
-	    
-	    ArrayList<String> groups = new ArrayList<>();
-	    
-	    while (res.next()) {
-	    	groups.add(res.getString(1));
-	    }
-	    
-	    return groups;
-	}
-
-	
-	private static ArrayList<String> getGroupListForStream(Connection cnn, boolean isAutumn, int nStream, String discName, int version) throws SQLException {
-		PreparedStatement ps;
-		if (isAutumn) {
-			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (NameDisc = ? AND NStream = ? AND load_id = ?)");
-		} else {
-			ps = cnn.prepareStatement("SELECT DISTINCT `Group` FROM kafedra.kaf43 WHERE (mod(Nsem, 2) = 0) AND (NameDisc = ? AND NStream = ? AND load_id = ?)");
-		}
-
-		ps.setString(1, discName);
-		ps.setInt(2, nStream);
-		ps.setInt(3, version);
-		
-		ps.execute();
-	    ResultSet res = ps.getResultSet();
-	    
-	    ArrayList<String> groups = new ArrayList<>();
-	    
-	    while (res.next()) {
-	    	groups.add(res.getString(1));
-	    }
-	    
-	    return groups;
 	}
 	
 	private static void getDiscNames(PreparedStatement ps, ArrayList<String> discNames, int version) throws SQLException {
