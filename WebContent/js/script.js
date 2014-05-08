@@ -40,8 +40,19 @@ $(function() {
 	$( "#btnappoint" ).click(function( event ) {
 		var val = $('#combobox option:selected').val();
 		ajaxAppoint(val);
-		$('#percent').find('img').attr('src', '../PercentHistohram?'+Math.random());
-		$('#time').find('img').attr('src', '../HoursHistohram?'+Math.random());
+		
+		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random()); // Strange bug workaround: duplicate chart loading
+		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
+		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
+	});
+	
+	// Reloading of charts images by click
+	$( "#percent ").click(function (event) {
+		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
+	});
+	
+	$( "#time ").click(function (event) {
+		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
 	});
 	
 	$( "#show" ).click(function( event ) {

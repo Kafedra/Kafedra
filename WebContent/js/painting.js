@@ -2,8 +2,12 @@ $(function(){
 	paintStart();
 	$( "#btnappoint" ).click(function( event ) {
 		if (globalSelectedLoadID != 0) {
-			$('#'+globalSelectedLoadID).children('a').removeClass('notappointed').addClass('appointed');
-		}
+			if ($('#combobox option:selected').val() != 0)
+				$('#'+globalSelectedLoadID).children('a').removeClass('notappointed').addClass('appointed');
+			else
+				$('#'+globalSelectedLoadID).children('a').removeClass('appointed').addClass('notappointed');
+		}	
+		
 		paintStart();
 	});
 	

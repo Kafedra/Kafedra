@@ -5,9 +5,9 @@
 		<li><a href="#time">В часах</a></li>
 	</ul>
 	<div id="percent">
-		<img src="../PercentHistohram">
+		<img src="../PercentBarChart">
 	</div>
 	<div id="time">
-	 	<img src="../HoursHistohram"> 		
+	 	<img src="../HoursBarChart"> 		
 	</div>
 </div>

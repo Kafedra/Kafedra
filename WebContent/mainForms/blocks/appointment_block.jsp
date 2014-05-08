@@ -45,6 +45,7 @@
                         <td>Выбор преподавателя:</td>   
                             <td>
                                 <select id="combobox" style="width:3in">
+                                <option value="0">-</option>
                                 <sql:setDataSource var="ds" driver="com.mysql.jdbc.Driver" url="<%=DBManager.URL %>" user="<%=DBManager.DB_LOGIN %>" password="<%=DBManager.DB_PASS %>"/>
                                 <sql:query dataSource="${ds}" sql="SELECT * FROM kafedra.teachers;" var="result" />                     
                                 <c:forEach var="row" items="${result.rows}">
