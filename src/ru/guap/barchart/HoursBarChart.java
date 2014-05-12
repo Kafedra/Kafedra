@@ -53,15 +53,20 @@ public class HoursBarChart extends BarChart {
     			
     			countValues.setInt(1, TreeNodeFactory.LOAD_VERSION);
     			ResultSet tData = teacherData.executeQuery();    			
-    			
+    			    			
     			while(tData.next()) {
     				teachId = tData.getInt(1);
+    				teachName = tData.getString(2);
+    				
+    				
     				countValues.setInt(2, teachId);
     				ResultSet allValues = countValues.executeQuery();
     				
     				if(allValues.next()) {
-	    				dataset.addValue(allValues.getInt(2), STR_CONTRACT, tData.getString(2));
-	    				dataset.addValue(allValues.getInt(1), STR_BUDGET, tData.getString(2));    			
+    					aVgO = allValues.getInt(1);
+    					aVcO = allValues.getInt(2);
+	    				dataset.addValue(aVcO, STR_CONTRACT,teachName );
+	    				dataset.addValue(aVgO, STR_BUDGET, teachName);    			
 	    			}
     			}
     			

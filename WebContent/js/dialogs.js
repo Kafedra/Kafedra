@@ -1,33 +1,17 @@
 $(function() {
 	$( "#dialog" ).dialog({
 		autoOpen: false,
+		minHeight: 200,
+		minWidth : 400,
+		maxHeight : 200,
+		maxWidth : 400,
 		show: {
 			effect: "blind",
 			duration: 1000
 		},
 		hide: {
-			effect: "explode",
-			duration: 1000
-		}
-	}); 
-	
-	$( "#dialog_report" ).dialog({
-		autoOpen: false,
-		show: {
-			effect: "blind",
-			duration: 1000
-		},
-		hide: {
-			effect: "explode",
+			effect: "slideUp",
 			duration: 1000
 		}
 	}); 	
-	
-	$( "#opener" ).click(function() {
-		$( "#dialog" ).dialog( "open" );
-	});
-	
-	$( "#report_opener" ).click(function() {
-		$( "#dialog" ).dialog( "open" );
-	});
 });
