@@ -14,6 +14,14 @@ public abstract class BarChart extends HttpServlet {
 	
 	protected static final String STR_CONTRACT = "Контракт";
 	protected static final String STR_BUDGET = "Бюджет";
+	protected static final String STR_PERCENT = "Процент";
+	protected static final int annualState = 800;
+	protected static int teachId;
+	protected static int teachRateG; //rate budget
+	protected static int teachRateC; // reate Contract
+	protected static int aVgO; //Budget hours of current group
+	protected static int aVcO; //Contract hours of current group
+	protected static String teachName;
 	
 	protected static Connection cnn;
 	protected static PreparedStatement teacherData;

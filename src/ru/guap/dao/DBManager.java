@@ -31,7 +31,6 @@ public class DBManager {
 			try {
 				Class.forName("com.mysql.jdbc.Driver");
 				con = DriverManager.getConnection(URL, DB_LOGIN, DB_PASS);
-				
 				psTeacher = con.prepareStatement("SELECT fio FROM kafedra.teachers WHERE id = ?;");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();

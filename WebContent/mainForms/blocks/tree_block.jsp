@@ -18,18 +18,19 @@
     <table>
     	<tr>
     		<td>
-    			<input id="hide" type="button" class="but" value="       Скрыть всё        "/>
+    			<input id="checkAll" type="button" class="but" value="      Выбрать всё        "/>
     		</td>
     		<td>
-    			<input id="showChecked" type="button" class="but" value="Раскрыть выбранные"/>
+    			<input id="clearChecked" type="button" class="but" value="Очистить выбранные"/>
     		</td>
+    		
     	</tr>
     	<tr>
     		<td>
     			<input id="hideChecked" type="button" class="but" value="Скрыть выбранные"/>
     		</td>
     		<td>
-    			<input id="clearChecked" type="button" class="but" value="Очистить выбранные"/>
+    			<input id="showChecked" type="button" class="but" value="Раскрыть выбранные"/>
     		</td>
     	</tr>
     </table>

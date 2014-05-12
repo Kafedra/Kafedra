@@ -32,6 +32,7 @@ public class PercentBarChart extends BarChart {
 
 	private PreparedStatement countValues;
 	
+	
 	public PercentBarChart() {
 		super();
 		
@@ -50,41 +51,26 @@ public class PercentBarChart extends BarChart {
 		OutputStream out = response.getOutputStream();
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		try {
-			int teachId;
-			int aVgO; //budget for cheking to zero
-			int aVcO; //contract for cheking to zero
-			int mustBe; 
-
+			//int mustBe; 
+			int percent;
 			countValues.setInt(1, TreeNodeFactory.LOAD_VERSION);
 			ResultSet tData = teacherData.executeQuery();
 
 			while(tData.next()) {
 				teachId = tData.getInt(1);
+				teachName = tData.getString(2);
+				teachRateG = tData.getInt(3);
+				teachRateC = tData.getInt(4);
 				this.countValues.setInt(2, teachId);
 				ResultSet allValues = this.countValues.executeQuery();
 
 				if(allValues.next()) {
 					aVgO = allValues.getInt(2);
 					aVcO = allValues.getInt(1); 
-					mustBe = allValues.getInt(3);
-
-					if((aVgO <= 0 && aVcO <= 0) || mustBe <= 0) {
-						dataset.addValue(0, STR_CONTRACT, tData.getString(2));
-						dataset.addValue(0, STR_BUDGET, tData.getString(2));   						
-					}
-					else if(aVgO <= 0){
-						dataset.addValue(0, STR_CONTRACT, tData.getString(2));
-						dataset.addValue((aVcO * 100f) / mustBe, STR_BUDGET, tData.getString(2)); 
-					}
-					else if (aVcO <= 0){
-
-						dataset.addValue((aVgO * 100f) / mustBe, STR_CONTRACT, tData.getString(2));
-						dataset.addValue(0, STR_BUDGET, tData.getString(2));     						
-					}
-					else {
-						dataset.addValue((aVgO * 100f) / mustBe, STR_CONTRACT, tData.getString(2));
-						dataset.addValue((aVcO * 100f) / mustBe, STR_BUDGET, tData.getString(2)); 
-					}
+					//mustBe = allValues.getInt(3);
+					percent = (aVgO+aVcO) / annualState * (teachRateG + teachRateC);
+					dataset.addValue(percent, STR_PERCENT,teachName);
+					
 				}
 			}
 
