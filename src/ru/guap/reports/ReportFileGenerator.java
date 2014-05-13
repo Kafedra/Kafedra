@@ -15,7 +15,7 @@ import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 import ru.guap.dao.DBManager;
-import ru.guap.treeview.TreeNodeFactory;
+import ru.guap.treeview.BurdenManager;
 
 
 public class ReportFileGenerator {
@@ -232,7 +232,7 @@ public class ReportFileGenerator {
 			ps = cnn.prepareStatement("SELECT * FROM kafedra.kaf43 WHERE (mod(Nsem, 2) != 0) AND (load_id=?)");
 		}
 
-		ps.setInt(1, TreeNodeFactory.LOAD_VERSION);
+		ps.setInt(1, BurdenManager.LOAD_VERSION);
 
 		return ps.executeQuery();
 	}

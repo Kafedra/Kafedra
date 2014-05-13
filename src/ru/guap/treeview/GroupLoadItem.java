@@ -6,12 +6,17 @@ public class GroupLoadItem {
 	public String kindLoad;
 	public int id;
 	public boolean isAppointed;
+	public int teacherId;
 	
-	public GroupLoadItem(String aName, int aStreamId, String aKindLoad, int aId, boolean aIsAppointed) {
+	public int valueCO, valueEP, valueCF, valueG;
+	public String nameDisc;
+	
+	public GroupLoadItem(String aName, int aStreamId, String aKindLoad, int aId, boolean aIsAppointed, int aTeacherId) {
 		this.name = aName;
 		this.streamId = aStreamId;
 		this.kindLoad = aKindLoad;
 		this.id = aId;
 		this.isAppointed = aIsAppointed;
+		this.teacherId = aTeacherId;
 	}
 }

@@ -1,6 +1,7 @@
 package ru.guap.barchart;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -15,7 +16,7 @@ public abstract class BarChart extends HttpServlet {
 	protected static final String STR_CONTRACT = "Контракт";
 	protected static final String STR_BUDGET = "Бюджет";
 	protected static final String STR_PERCENT = "Процент";
-	protected static final int annualState = 800;
+
 	protected static int teachId;
 	protected static int teachRateG; //rate budget
 	protected static int teachRateC; // reate Contract
@@ -28,13 +29,14 @@ public abstract class BarChart extends HttpServlet {
 	
 	public BarChart() {
 		super();
-		
-        cnn = DBManager.getInstance().getConnection();
-        
-        try {
-        	teacherData = cnn.prepareStatement("SELECT * FROM kafedra.teachers");        	
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cnn = DriverManager.getConnection(DBManager.URL, DBManager.DB_LOGIN, DBManager.DB_PASS);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 }

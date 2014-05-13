@@ -3,10 +3,21 @@ $(function(){
 	$( "#btnappoint" ).click(function( event ) {
 		if (globalSelectedLoadID != 0) {
 			if ($('#combobox option:selected').val() != 0)
-				$('#'+globalSelectedLoadID).children('a').removeClass('notappointed').addClass('appointed');
+				$('#' + globalSelectedLoadID).children('a').removeClass('notappointed').addClass('appointed');
 			else
-				$('#'+globalSelectedLoadID).children('a').removeClass('appointed').addClass('notappointed');
-		}	
+				$('#' + globalSelectedLoadID).children('a').removeClass('appointed').addClass('notappointed');
+		} else {
+			if (globalIsMulti && globalDiscID != 0 && globalStreamID != 0) {
+				var hashedId = globalDiscID + 23 * globalStreamID;
+				
+				if ($('#combobox option:selected').val() != 0)
+					$('#' + hashedId).children('a').removeClass('notappointed').addClass('appointed');
+				else
+					$('#' + hashedId).children('a').removeClass('appointed').addClass('notappointed');				
+			}
+		}
+
+		
 		
 		paintStart();
 	});

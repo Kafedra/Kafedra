@@ -25,7 +25,7 @@ public class DBManager {
 	private Connection con = null;
 
 	private PreparedStatement psTeacher;
-
+	
 	private DBManager() {
 		if (con == null) {
 			try {
@@ -105,7 +105,9 @@ public class DBManager {
 	}
 
 	public Connection getConnection() {
-		return this.con;
+		synchronized (this.con) {
+			return this.con;
+		}
 	}
 
 	public String getTeacherById(int teacherID) throws SQLException {

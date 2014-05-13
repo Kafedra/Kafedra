@@ -14,7 +14,23 @@
 	   	#else
 	   		#set( $class = "notappointed" )
 	   	#end
-	   	#set( $attr = "onclick='ajaxLoad(&#39;$child.getNodeId()&#39;)' class='$class'")
+	   	
+	   	#if($child.isMultiNode() == true)
+	   	   #set( $multi = "true" )
+	   	   #set( $streamid = $child.getStreamId() )
+	   	   #set( $discid = $child.getDiscId() )
+	   	   #set( $id = $child.getNodeId() )
+	   	   
+           #set( $attr = "id='$id' onclick='ajaxLoadMulti(&#39;$child.getNodeId()&#39;, $streamid, $discid)' class='$class' ismulti='$multi' streamid='$streamid' discid='$discid'")
+	   	#else
+           #set( $multi = "false" )
+           #set( $streamid = "0" )
+           #set( $discid = "0" )
+           #set( $id = $child.getNodeId() )
+           
+           #set( $attr = "id='$id' onclick='ajaxLoad(&#39;$child.getNodeId()&#39;)' class='$class' ismulti='$multi' streamid='$streamid' discid='$discid'")
+	   	#end
+	   	
 	#end 
   		<input type="checkbox" class="cb" name="$child.getNodeName()"/>
   	
