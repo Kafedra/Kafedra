@@ -21,7 +21,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 
-import ru.guap.treeview.TreeNodeFactory;
+import ru.guap.treeview.BurdenManager;
 
 import com.jsptree.bean.Node;
 
@@ -45,7 +45,7 @@ public class TreeTag extends SimpleTagSupport {
 			Template velocityTemplate = velocityEngine.getTemplate(properties.getProperty("apache.velocity.template.name"));
 			VelocityContext context = new VelocityContext();
 
-			Node root = TreeNodeFactory.getRootNode(isauthum);
+			Node root = BurdenManager.getInstance().getRootNode(isauthum);
 			context.put("node", root);
 			
 			StringWriter writer = new StringWriter();

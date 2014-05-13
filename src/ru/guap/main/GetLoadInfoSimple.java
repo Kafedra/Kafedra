@@ -42,17 +42,17 @@ import nl.knaw.dans.common.dbflib.ValueTooLargeException;
 import ru.guap.config.WebConfig;
 import ru.guap.dao.DBManager;
 import ru.guap.dao.dbf.DBFConverter;
-import ru.guap.treeview.TreeNodeFactory;
+import ru.guap.treeview.BurdenManager;
 
-@WebServlet(description = "Get load info from DB by load ID", urlPatterns = { "/GetLoadInfo" })
+@WebServlet(description = "Get load info from DB by load ID", urlPatterns = { "/GetLoadInfoSimple" })
 @MultipartConfig
-public class GetLoadInfo extends HttpServlet {
+public class GetLoadInfoSimple extends HttpServlet {
 	private static final long serialVersionUID = 2L;
 
 	private static Connection cnn;
 	private static PreparedStatement psLoad;
 
-	public GetLoadInfo() {
+	public GetLoadInfoSimple() {
 		super();
 
 		cnn = DBManager.getInstance().getConnection();
@@ -84,7 +84,7 @@ public class GetLoadInfo extends HttpServlet {
 				while (res.next()) {
 					String group = res.getString(1);
 					String kind = res.getString(2);
-					kind = TreeNodeFactory.renameLoadKind(kind);
+					kind = BurdenManager.getInstance().renameLoadKind(kind);
 					String nameDisc = res.getString(3);
 					int teacherID = res.getInt(4);
 					String fio = "<не назначен>";

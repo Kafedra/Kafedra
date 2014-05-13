@@ -10,6 +10,8 @@ public class GroupStream {
 	
 	private static final String[] groupsEndings = { "группа", "группы", "групп" };
 	
+	private boolean isMultiGroup;
+	
 	public GroupStream(boolean aIsZeroStream, int aStreamId) {
 		this.isZeroStream = aIsZeroStream;
 		this.items = new ArrayList<>();
@@ -30,23 +32,27 @@ public class GroupStream {
 	@Override
 	public String toString() {
 		if (!isZeroStream) {
-			StringBuilder s = new StringBuilder().append("Поток: ");
-
-			for (int i = 0; i < items.size(); i++) {
-				GroupLoadItem item = items.get(i);
-
-				s.append(item.name);
-
-				if (i != items.size() - 1) {	
-					s.append(", ");
-				}
-			}
-
-			return s.toString();
+			return "Поток: " + getGroupStringList();
 		} else {
 			int groupsCount = countUniqueGroups();
 			return "Не в потоке: " + groupsCount + " " + groupsPluralEnding(groupsCount);
 		}
+	}
+	
+	public String getGroupStringList() {
+		StringBuilder s = new StringBuilder();
+		
+		for (int i = 0; i < items.size(); i++) {
+			GroupLoadItem item = items.get(i);
+
+			s.append(item.name);
+
+			if (i != items.size() - 1) {	
+				s.append(", ");
+			}
+		}
+
+		return s.toString();	
 	}
 	
 	public int countUniqueGroups() {
@@ -80,5 +86,13 @@ public class GroupStream {
 					return groupsEndings[2];
 			}
 		}
+	}
+	
+	public boolean isMultiGroup() {
+		return this.isMultiGroup;
+	}
+	
+	public void setMultiGroup(boolean multi) {
+		this.isMultiGroup = true;
 	}
 }

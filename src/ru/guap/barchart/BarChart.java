@@ -1,6 +1,7 @@
 package ru.guap.barchart;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -28,13 +29,14 @@ public abstract class BarChart extends HttpServlet {
 	
 	public BarChart() {
 		super();
-		
-        cnn = DBManager.getInstance().getConnection();
-        
-        try {
-        	teacherData = cnn.prepareStatement("SELECT * FROM kafedra.teachers");        	
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			cnn = DriverManager.getConnection(DBManager.URL, DBManager.DB_LOGIN, DBManager.DB_PASS);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 }

@@ -6,12 +6,12 @@
         </ul>
         <div id="tabs-1">
         <ul class="tree">
-         	 <%@ include file="../tree_os.jsp" %>
+         	 <%@ include file="../tree_ves.jsp" %>
           </ul>
         </div>
         <div id="tabs-2">
         <ul class="tree">
-          	<%@ include file="../tree_ves.jsp" %>
+          	<%@ include file="../tree_os.jsp" %>
           </ul>
 	</div>
     </div>

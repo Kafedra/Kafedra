@@ -14,6 +14,11 @@ public class Node {
 	
 	private boolean isAppointed;
 	
+	private boolean isMultiNode;
+	private int streamId;
+	
+	private int discId;
+	
 	// Each node has list of children
 	private ArrayList<Node> childrens = new ArrayList<>();	
 	// This will hold exceptions if occurred.
@@ -30,8 +35,36 @@ public class Node {
 		this.nodeName = name;
 	}	
 	
+	public boolean isMultiNode() {
+		return isMultiNode;
+	}
+
+	public void setMultiNode(boolean isMultiNode) {
+		this.isMultiNode = isMultiNode;
+	}
+
+	public int getStreamId() {
+		return streamId;
+	}
+
+	public void setStreamId(int streamId) {
+		this.streamId = streamId;
+	}
+
+	public int getDiscId() {
+		return discId;
+	}
+
+	public void setDiscId(int discId) {
+		this.discId = discId;
+	}
+
 	public String getNodeId() {
-		return nodeId;
+		if (!this.isMultiNode) {
+			return nodeId;
+		} else {
+			return new Integer(this.discId + 23 * this.streamId).toString();
+		}
 	}
 
 	public void setNodeId(String nodeId) {

@@ -23,82 +23,83 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import ru.guap.dao.DBManager;
-import ru.guap.treeview.TreeNodeFactory;
+import ru.guap.treeview.BurdenManager;
 
 @WebServlet("/HoursBarChart")
 public class HoursBarChart extends BarChart {
 
 	private PreparedStatement countValues;
-	
-    public HoursBarChart() {
-        super();
-        
-    	try {
+
+	public HoursBarChart() {
+		super();
+
+		try {
 			this.countValues = cnn.prepareStatement("SELECT sum(ValueG), sum(ValueCO) FROM kafedra.kaf43 WHERE load_id = ? AND teachers_id = ?");
+			this.teacherData = cnn.prepareStatement("SELECT * FROM kafedra.teachers");        	
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		};
-    }
+	}
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
-    public void doGet(HttpServletRequest request, HttpServletResponse response)
-    		throws ServletException, IOException {
-    		OutputStream out = response.getOutputStream();
-    		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-    		try {
-    			int teachId;
-    			
-    			countValues.setInt(1, TreeNodeFactory.LOAD_VERSION);
-    			ResultSet tData = teacherData.executeQuery();    			
-    			    			
-    			while(tData.next()) {
-    				teachId = tData.getInt(1);
-    				teachName = tData.getString(2);
-    				
-    				
-    				countValues.setInt(2, teachId);
-    				ResultSet allValues = countValues.executeQuery();
-    				
-    				if(allValues.next()) {
-    					aVgO = allValues.getInt(1);
-    					aVcO = allValues.getInt(2);
-	    				dataset.addValue(aVcO, STR_CONTRACT,teachName );
-	    				dataset.addValue(aVgO, STR_BUDGET, teachName);    			
-	    			}
-    			}
-    			
-    			JFreeChart chart = ChartFactory.createBarChart(
-		    		"Нагрузка преподавателей в часах",
-		    		"Соотношения",
-		    		"Часы",
-		    		dataset,
-		    		PlotOrientation.VERTICAL,
-		    		true, true, false
-	    		);
-    			
-    			CategoryAxis ca = new CategoryAxis();
-    			ca.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
-    			ca.setMaximumCategoryLabelWidthRatio(5f);
-    			
-    			ca.setLowerMargin(0);
-    			ca.setCategoryMargin(0);
-    			ca.setUpperMargin(0);      			
-    			
-    			chart.getCategoryPlot().setDomainAxis(ca);
-    			
-	    		response.setContentType("image/png");
-	    		ChartUtilities.writeChartAsPNG(out, chart, BLOCK_WIDTH, BLOCK_HEIGHT);
-	    		}
-    		catch (Exception e) {
-	    		System.err.println(e.toString());
-	    		}
-    		finally {
-    			out.close();
-    		}
-    		}
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		OutputStream out = response.getOutputStream();
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		try {
+			int teachId;
+
+			countValues.setInt(1, BurdenManager.LOAD_VERSION);
+			ResultSet tData = teacherData.executeQuery();    			
+
+			while(tData.next()) {
+				teachId = tData.getInt(1);
+				teachName = tData.getString(2);
+
+
+				countValues.setInt(2, teachId);
+				ResultSet allValues = countValues.executeQuery();
+
+				if(allValues.next()) {
+					aVgO = allValues.getInt(1);
+					aVcO = allValues.getInt(2);
+					dataset.addValue(aVcO, STR_CONTRACT,teachName );
+					dataset.addValue(aVgO, STR_BUDGET, teachName);    			
+				}
+			}
+
+			JFreeChart chart = ChartFactory.createBarChart(
+					"Нагрузка преподавателей в часах",
+					"Соотношения",
+					"Часы",
+					dataset,
+					PlotOrientation.VERTICAL,
+					true, true, false
+					);
+
+			CategoryAxis ca = new CategoryAxis();
+			ca.setCategoryLabelPositions(CategoryLabelPositions.UP_45);
+			ca.setMaximumCategoryLabelWidthRatio(5f);
+
+			ca.setLowerMargin(0);
+			ca.setCategoryMargin(0);
+			ca.setUpperMargin(0);      			
+
+			chart.getCategoryPlot().setDomainAxis(ca);
+
+			response.setContentType("image/png");
+			ChartUtilities.writeChartAsPNG(out, chart, BLOCK_WIDTH, BLOCK_HEIGHT);
+		}
+		catch (Exception e) {
+			System.err.println(e.toString());
+		}
+		finally {
+			out.close();
+		}
+	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
