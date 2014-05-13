@@ -30,6 +30,7 @@ import ru.guap.treeview.BurdenManager;
 @WebServlet("/PercentBarChart")
 public class PercentBarChart extends BarChart {
 
+	private static final int ANNUAL_STATE = 800;
 	private PreparedStatement countValues;
 
 
@@ -53,7 +54,7 @@ public class PercentBarChart extends BarChart {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		try {
-			int percent;
+			float percent = 0.0f;
 			countValues.setInt(1, BurdenManager.LOAD_VERSION);
 			ResultSet tData = teacherData.executeQuery();
 
@@ -62,6 +63,7 @@ public class PercentBarChart extends BarChart {
 				teachName = tData.getString(2);
 				teachRateG = tData.getInt(3);
 				teachRateC = tData.getInt(4);
+
 				this.countValues.setInt(2, teachId);
 				ResultSet allValues = this.countValues.executeQuery();
 
@@ -69,8 +71,12 @@ public class PercentBarChart extends BarChart {
 					aVgO = allValues.getInt(2);
 					aVcO = allValues.getInt(1); 
 
-					percent = (aVgO + aVcO) / annualState * (teachRateG + teachRateC);
-					dataset.addValue(percent, STR_PERCENT,teachName);					
+					int rateSumRatio = (teachRateG + teachRateC) / 100;
+					if (ANNUAL_STATE * rateSumRatio != 0) {
+						percent = (float) ((aVgO + aVcO) / (ANNUAL_STATE * rateSumRatio * 1.0f));
+					}
+					
+					dataset.addValue(percent * 100, STR_PERCENT,teachName);					
 				}
 			}
 
