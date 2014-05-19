@@ -1,6 +1,8 @@
 $(function() {
 	$( "#tabs" ).tabs();
+	
 	$( "#histo" ).tabs();
+	
 	$( "#load,#dialog_report,#norm").dialog({
 		minHeight: 200,
 		minWidth : 400,
@@ -33,13 +35,7 @@ $(function() {
 		event.preventDefault();
 	});
 	
-	$( "#btnappoint" ).click(function( event ) {
-		var val = $('#combobox option:selected').val(); 
-		ajaxAppoint(val);
-		
-		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
-		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
-	});
+	
 	
 	// Reloading of charts images by click
 	$( "#percent ").click(function (event) {
@@ -76,7 +72,13 @@ $(function() {
 	});
 	
 	$(".cb").change(function (event) {
-		$(this).find(".cb").attr("checked",true);
+		if($(this).is(':checked')){
+			$(this).parent().find(".cb").attr("checked",true);
+			$(".cb:checked").parent().find("a[group]").addClass("current");
+		}else {
+			$(this).parent().find(".cb").removeAttr("checked");	
+			$(this).parent().find("a[group]").removeClass("current");
+		}
 	});
 	
 	$( "#clearChecked" ).click(function( event ) {			

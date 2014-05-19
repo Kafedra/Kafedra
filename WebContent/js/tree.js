@@ -65,7 +65,7 @@ function ajaxLoadMulti(id, streamid, discid) {
 }
 
 //Set teacher's load info by ajax-GET query
-function ajaxAppoint(teacher_id) {
+function ajaxAppoint(teacher_id,selectedLoadID) {
 	if (globalIsMulti) {
 		if (globalDiscID == 0 || globalStreamID == 0) {
 			alert("Группа не выбрана!");
@@ -85,12 +85,12 @@ function ajaxAppoint(teacher_id) {
 			alert("Request Failed: " + err);
 		});
 	} else {
-		if (globalSelectedLoadID == 0) {
+		if (selectedLoadID == 0) {
 			alert("Группа не выбрана!");
 			return;
 		}
 		
-		$.getJSON("../AppointLoadTo", {"load_id": globalSelectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
+		$.getJSON("../AppointLoadTo", {"load_id": selectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
 			if (response.success) {
 				ajaxLoad(globalSelectedLoadID);
 				$('#progressbar').trigger('refresh');

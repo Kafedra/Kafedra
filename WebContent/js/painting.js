@@ -16,9 +16,6 @@ $(function(){
 					$('#' + hashedId).children('a').removeClass('appointed').addClass('notappointed');				
 			}
 		}
-
-		
-		
 		paintStart();
 	});
 	
@@ -28,6 +25,7 @@ $(function(){
 			var ret = paintUl($ul);
 		});
 	}
+	
 	function paintUl($parent){
 		var toCompare;
 		var li = $parent.children('li');

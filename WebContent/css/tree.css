@@ -24,9 +24,15 @@ ul.tree, ul.tree ul {
 
 ul.tree a {
 	text-decoration: none;
-	color: #369;
-	
+	color: #369;	
 }
+
+
+ul.tree a.current {
+	text-decoration: none;
+	background-color: blue;	
+}
+
 ul.tree ul { 
 	margin-left: 10px; 
  }

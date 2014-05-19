@@ -15,6 +15,7 @@
 <script src="../js/jquery-1.8.3.js"></script>
 <script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
 <script src="../js/script.js"></script>
+<script src="../js/multiApp.js"></script>
 <script src="../js/tree.js"></script>
 <script src="../js/painting.js"></script>
 <script src="../js/appointment_scripts.js"></script>

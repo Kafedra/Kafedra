@@ -5,7 +5,8 @@
     #if ($child.getChildren().size() != 0) 
     	<li class="parent-node" id="$child.getNodeId()">
     #else 
-     	<li class="last" id="$child.getNodeId()"> #end 
+     	<li class="last" id="$child.getNodeId()">
+    #end     	
     	
     #set($attr = "")
 	#if ($child.getChildren().size() == 0)
@@ -28,7 +29,7 @@
            #set( $discid = "0" )
            #set( $id = $child.getNodeId() )
            
-           #set( $attr = "id='$id' onclick='ajaxLoad(&#39;$child.getNodeId()&#39;)' class='$class' ismulti='$multi' streamid='$streamid' discid='$discid'")
+           #set( $attr = "id='$id' class='$class' group ismulti='$multi' streamid='$streamid' discid='$discid'")
 	   	#end
 	   	
 	#end 
