@@ -4,6 +4,9 @@ package com.jsptree.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import ru.guap.treeview.GroupLoadItem;
+import ru.guap.treeview.GroupStream;
+
 public class Node {
 	// Current node id
 	private String nodeId;
@@ -26,6 +29,9 @@ public class Node {
 	
 	private boolean isLoadNode; // leaf node
 
+	private GroupLoadItem item;
+	private GroupStream stream;
+	
 	public Node(String id) {
 		this.nodeId = id;
 	}
@@ -37,6 +43,14 @@ public class Node {
 	
 	public boolean isMultiNode() {
 		return isMultiNode;
+	}
+
+	public GroupLoadItem getItem() {
+		return item;
+	}
+
+	public void setItem(GroupLoadItem item) {
+		this.item = item;
 	}
 
 	public void setMultiNode(boolean isMultiNode) {
@@ -121,6 +135,14 @@ public class Node {
 	
 	public boolean isAppointed() {
 		return this.isAppointed;
+	}
+
+	public GroupStream getStream() {
+		return stream;
+	}
+
+	public void setStream(GroupStream stream) {
+		this.stream = stream;
 	}
 }
 

@@ -1,52 +1,65 @@
 //Script for muli appointment in one click 
 var groupArray;
+var jsonGroupArray;
 
-$(function() {
-	
+	//Groups to show on page
 	function Group (){
-		var discName;
+		var discname;
 		var kindLoad;
 		var groupName;
 		var valueG;
 		var valueC;
 		var total;
 		var teacher;
-		var id;		
+		var id;	
+		var isMulti;
 	}	
+	//Groups to send by json
+	function checkedGroup(){ 
+		var isMulti;
+		var id;
+		var discId;
+		var streamId;		
+	}
+	
 	
 	$( "#btnappoint" ).click(function( event ) {
 		var val = $('#combobox option:selected').val(); 	
-		
-		groupArray.forEach(function(x){
-			ajaxAppoint(val,x.id);
-			globalSelectedLoadID=x.id;
-		});
-		
+		//getting teacher and appointing to array of groups
+		ajaxAppoint(val,jsonGroupArray);
+		//refreshing bar charts
 		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
 		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
 	});
 		
 	$(".cb").change(function (event) {
 		if($(this).is(':checked')){			
-			groupArray = new Array();			
+			groupArray = new Array();	
+			jsonGroupArray = new Array();
 			$(".cb:checked").parent().find("a[group]").each(function(index,x){
-				var group = new Group();				
-				$.getJSON("../GetLoadInfoSimple", {"id": $(x).attr('id'), "random" : Math.random()*99999}).done(function( responseObject ) {
-					
-					group.discName = responseObject.namedisc;
-					group.kindLoad = responseObject.kindload;
-					group.groupName = responseObject.group;
-					group.valueG = responseObject.valueg;
-					group.valueC = responseObject.valuec;
-					group.total = responseObject.valuetotal;
-					group.teacher = responseObject.fio;
-					group.id = $(x).attr('id');		
-					groupArray.push(group);	
-				}).fail(function( jqxhr, textStatus, error ) {
-					var err = textStatus + ", " + error;
-					alert("Request Failed: " + err);
-				});				
+				
+				var group = new Group();
+				var jsonGroup = new checkedGroup();
+				//Group to send by json
+				jsonGroup.id = $(x).attr('id');
+				jsonGroup.isMulti = $(x).attr('ismulti');
+				jsonGroup.discId = $(x).attr('discid');
+				jsonGroup.streamId = $(x).attr('streamid');
+				
+				//Group to show on page
+				group.discname = $(x).parent().parent().parent().parent().text();
+				group.kindLoad = $(x).parent().parent().text();
+				group.groupName = $(x).attr('group');
+				group.valueG = $(x).attr('valueg');
+				group.valueC= $(x).attr('valuec');
+				group.total = $(x).attr('valueep');
+				group.teacher = $(x).attr('teacherid'); //--
+				group.id = $(x).attr('id');	
+				group.isMulti = $(x).attr('ismulti');
+				
+				//adding groups to array
+				jsonGroupArray.push(jsonGroup);
+				groupArray.push(group);
 			});
 		}			
 	});	
-});

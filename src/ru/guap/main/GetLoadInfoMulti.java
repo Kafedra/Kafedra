@@ -90,7 +90,7 @@ public class GetLoadInfoMulti extends HttpServlet {
 				
 				for (GroupLoadItem item : s.getItems()) {
 					if (!isInfoSet) {
-						kind = item.kindLoad;
+						kind = item.getKindLoad();
 						nameDisc = item.nameDisc;
 						
 						isInfoSet = true;
@@ -100,10 +100,10 @@ public class GetLoadInfoMulti extends HttpServlet {
 						valueEP = item.valueEP;
 					}					
 					
-					if (item.teacherId != 0 && item.isAppointed) {
-						fio = DBManager.getInstance().getTeacherById(item.teacherId);
+					if (item.getTeacherId() != 0 && item.isAppointed()) {
+						fio = DBManager.getInstance().getTeacherById(item.getTeacherId());
 						isAppointed = true;
-					} else if (!item.isAppointed) {
+					} else if (!item.isAppointed()) {
 						isAppointed = false;
 					}
 					

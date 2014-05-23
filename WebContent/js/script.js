@@ -63,14 +63,6 @@ $(function() {
 			$(".cb").attr("checked",true);			
 	});	
 	
-	$( "#showChecked" ).click(function( event ) {			
-		$(".cb:checked").parent().find('ul').show();
-	});
-	
-	$( "#hideChecked" ).click(function( event ) {			
-		$(".cb:checked").parent().find('ul').hide();
-	});
-	
 	$(".cb").change(function (event) {
 		if($(this).is(':checked')){
 			$(this).parent().find(".cb").attr("checked",true);

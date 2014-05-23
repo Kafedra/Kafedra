@@ -4,6 +4,7 @@
     
     #if ($child.getChildren().size() != 0) 
     	<li class="parent-node" id="$child.getNodeId()">
+  		<img class="plus" src="../treeImg/plus.jpg">
     #else 
      	<li class="last" id="$child.getNodeId()">
     #end     	
@@ -21,15 +22,21 @@
 	   	   #set( $streamid = $child.getStreamId() )
 	   	   #set( $discid = $child.getDiscId() )
 	   	   #set( $id = $child.getNodeId() )
-	   	   
+   		   #set( $valueC = $child.getStream().getValueC() )
+           #set( $valueG = $child.getStream().getValueG() )
+           #set( $valueEP = $child.getStream().getValueEP() )
+           	   	   
            #set( $attr = "id='$id' onclick='ajaxLoadMulti(&#39;$child.getNodeId()&#39;, $streamid, $discid)' class='$class' ismulti='$multi' streamid='$streamid' discid='$discid'")
 	   	#else
            #set( $multi = "false" )
            #set( $streamid = "0" )
            #set( $discid = "0" )
            #set( $id = $child.getNodeId() )
-           
-           #set( $attr = "id='$id' class='$class' group ismulti='$multi' streamid='$streamid' discid='$discid'")
+           #set( $group = $child.getItem().getName() )
+           #set( $valueC = $child.getItem().getValueC() )
+           #set( $valueG = $child.getItem().getValueG() )
+           #set( $valueEP = $child.getItem().getValueEP() )
+           #set( $attr = "id='$id' class='$class' group='$group' valueC='valueC' valueG = 'valueG' valueEp = 'valueEP' ismulti='$multi' streamid='$streamid' discid='$discid'")
 	   	#end
 	   	
 	#end 
