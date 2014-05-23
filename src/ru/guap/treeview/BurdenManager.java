@@ -175,16 +175,16 @@ public class BurdenManager {
 			HashMap<Integer, GroupStream> nonZeroStreams = new HashMap<>();
 
 			for (GroupLoadItem item : groupsList) {
-				if (item.streamId == 0) {
+				if (item.getStreamId() == 0) {
 					zeroStream.addGroupItem(item);
 				} else {
 					// Try to find stream if already added
 					GroupStream stream = null;
-					boolean isLecture = item.kindLoad.equals("лекц");
+					boolean isLecture = item.getKindLoad().equals("лекц");
 					if (isLecture) {
-						stream = discByCode.get(disc.id).getSteams().get(item.streamId);
+						stream = discByCode.get(disc.id).getSteams().get(item.getStreamId());
 					} else {
-						stream = disc.getSteams().get(item.streamId);
+						stream = disc.getSteams().get(item.getStreamId());
 					}
 
 					// If stream already added, then add item to it
@@ -192,7 +192,7 @@ public class BurdenManager {
 						stream.addGroupItem(item);
 					} else {
 						// If not, create a new stream, save it and add item to new stream
-						stream = new GroupStream(false, item.streamId);
+						stream = new GroupStream(false, item.getStreamId());
 						stream.addGroupItem(item);
 
 						if (isLecture) {
@@ -249,11 +249,11 @@ public class BurdenManager {
 
 			for (int i = 0; i < stream.getItems().size(); i++) {
 				GroupLoadItem item = stream.getItems().get(i);
-
-				name.append(item.name);
-				if (groupLoadNode.isAppointed() && !item.isAppointed) { 
+				
+				name.append(item.getName());
+				if (groupLoadNode.isAppointed() && !item.isAppointed()) { 
 					groupLoadNode.setAppointed(false);
-				} else if (!groupLoadNode.isAppointed() && item.isAppointed){
+				} else if (!groupLoadNode.isAppointed() && item.isAppointed()){
 					groupLoadNode.setAppointed(true);
 				}
 
@@ -266,21 +266,25 @@ public class BurdenManager {
 			groupLoadNode.setNodeName(name.toString());
 			groupLoadNode.setDiscId(disc.id);
 			groupLoadNode.setMultiNode(true);
+			
+			groupLoadNode.setStream(stream);
 		}
 
 		for (GroupLoadItem i : stream.getItems()) {
 			if (!stream.isMultiGroup()) {
-				groupLoadNode = new Node(new Integer(i.id).toString(), i.name);
+				groupLoadNode = new Node(new Integer(i.getId()).toString(), i.getName());
 				groupLoadNode.setLoadNode(true);
-				groupLoadNode.setAppointed(i.isAppointed);
+				groupLoadNode.setAppointed(i.isAppointed());
 				groupLoadNode.setIsSelected(0);
+				
+				groupLoadNode.setItem(i);
 			}
 			
-			Node loadKindNode = loadKindsNodes.get(i.kindLoad);
+			Node loadKindNode = loadKindsNodes.get(i.getKindLoad());
 
 			if (loadKindNode == null) {
-				loadKindNode = new Node("0", loadKindRenamingTable.get(i.kindLoad));
-				loadKindsNodes.put(i.kindLoad, loadKindNode);
+				loadKindNode = new Node("0", loadKindRenamingTable.get(i.getKindLoad()));
+				loadKindsNodes.put(i.getKindLoad(), loadKindNode);
 
 				streamNode.addChildNode(loadKindNode);
 			}

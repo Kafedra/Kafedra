@@ -87,10 +87,10 @@ public class AppointLoadToMulti extends HttpServlet {
 				}
 				
 				for (GroupLoadItem item : s.getItems()) {
-					appointTeacherTo(item.id, teacherId);
+					appointTeacherTo(item.getId(), teacherId);
 					
-					item.isAppointed = (teacherId != 0);
-					item.teacherId = teacherId;
+					item.setAppointed((teacherId != 0));
+					item.setTeacherId(teacherId);
 				}
 
 				out.println("{ \"success\": true }");

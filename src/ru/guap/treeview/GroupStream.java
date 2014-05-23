@@ -45,7 +45,7 @@ public class GroupStream {
 		for (int i = 0; i < items.size(); i++) {
 			GroupLoadItem item = items.get(i);
 
-			s.append(item.name);
+			s.append(item.getName());
 
 			if (i != items.size() - 1) {	
 				s.append(", ");
@@ -58,8 +58,8 @@ public class GroupStream {
 	public int countUniqueGroups() {
 		HashSet<String> groupsSet = new HashSet<>();
 		for (GroupLoadItem item : this.items) {
-			if (!groupsSet.contains(item.name)) {
-				groupsSet.add(item.name);
+			if (!groupsSet.contains(item.getName())) {
+				groupsSet.add(item.getName());
 			}
 		}
 			
@@ -94,5 +94,35 @@ public class GroupStream {
 	
 	public void setMultiGroup(boolean multi) {
 		this.isMultiGroup = true;
+	}
+	
+	public int getValueG() {
+		int valueG = 0;
+		
+		for (GroupLoadItem i : this.items) {
+			valueG += i.valueG;
+		}
+		
+		return valueG;
+	}
+	
+	public int getValueC() {
+		int valueC = 0;
+		
+		for (GroupLoadItem i : this.items) {
+			valueC += i.valueCF + i.valueCO;
+		}
+		
+		return valueC;
+	}
+	
+	public int getValueEP() {
+		int valueEP = 0;
+		
+		for (GroupLoadItem i : this.items) {
+			valueEP += i.valueEP;
+		}
+		
+		return valueEP;
 	}
 }

@@ -22,14 +22,14 @@
   
   }
   
-  ul.tree a.appointed{
+  ul.tree .appointed{
   	color:green;
   }
   
-  ul.tree a.notappointed{
+  ul.tree .notappointed{
   	color:red;
   }
   
-  ul.tree a.semiappointed{
+  ul.tree .semiappointed{
   	color:#f90;
   }

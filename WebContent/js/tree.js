@@ -13,15 +13,38 @@ $(function() {
 		event.preventDefault();
 		$ul = $(this).siblings('ul');
 		if ($ul.css('display') == 'none')
-			$ul.show();
+			ulOpen($ul);
 		else
-			$ul.hide();
+			ulClose($ul);
 	});
+	
+	
+	$( "#showChecked" ).click(function( event ) {			
+		$(".cb:checked").parent().find('ul').each(function(){
+			ulOpen($(this));
+		});
+	});
+	
+	$( "#hideChecked" ).click(function( event ) {			
+		$(".cb:checked").parent().find('ul').each(function(){
+			ulClose($(this));			
+		});
+	});
+	
+	function ulOpen($ul){
+		$ul.show();
+		$ul.siblings(".plus").attr("src","../treeImg/minus.jpg");
+	}
+	
+	function ulClose($ul){
+		$ul.hide();
+		$ul.siblings(".plus").attr("src","../treeImg/plus.jpg");
+	}
 });
 
 function toggle(X){
 }
-
+/*
 //Get teacher's load info by ajax-GET query
 function ajaxLoad(id) {	
 	$.getJSON("../GetLoadInfoSimple", {"id": id, "random" : Math.random()*99999}).done(function( responseObject ) {
@@ -64,35 +87,16 @@ function ajaxLoadMulti(id, streamid, discid) {
 	});
 }
 
-//Set teacher's load info by ajax-GET query
-function ajaxAppoint(teacher_id) {
-	if (globalIsMulti) {
-		if (globalDiscID == 0 || globalStreamID == 0) {
+//Set teacher's load info by ajax-GET query*/
+function ajaxAppoint(teacher_id,array) {
+		if (array == 0) {
 			alert("Группа не выбрана!");
 			return;
 		}
 		
-		$.getJSON("../AppointLoadToMulti", {"discid": globalDiscID, "streamid": globalStreamID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
-
+		$.getJSON("../AppointLoadTo", {"data": array, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
 			if (response.success) {
-				ajaxLoadMulti(globalDiscID + 23 * globalStreamID, globalStreamID, globalDiscID);
-				$('#progressbar').trigger('refresh');
-			} else {
-				alert(response.reason + " - error!");
-			}
-		}).fail(function( jqxhr, textStatus, error ) {
-			var err = textStatus + ", " + error;
-			alert("Request Failed: " + err);
-		});
-	} else {
-		if (globalSelectedLoadID == 0) {
-			alert("Группа не выбрана!");
-			return;
-		}
-		
-		$.getJSON("../AppointLoadTo", {"load_id": globalSelectedLoadID, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
-			if (response.success) {
-				ajaxLoad(globalSelectedLoadID);
+				
 				$('#progressbar').trigger('refresh');
 			} else {
 				alert(response.reason + " - error!");
@@ -102,4 +106,4 @@ function ajaxAppoint(teacher_id) {
 			alert("Request Failed: " + err);
 		});
 	}
-}
+
