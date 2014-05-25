@@ -66,10 +66,8 @@ $(function() {
 	$(".cb").change(function (event) {
 		if($(this).is(':checked')){
 			$(this).parent().find(".cb").attr("checked",true);
-			$(".cb:checked").parent().find("a[group]").addClass("current");
 		}else {
-			$(this).parent().find(".cb").removeAttr("checked");	
-			$(this).parent().find("a[group]").removeClass("current");
+			$(this).parent().find(".cb").removeAttr("checked");				
 		}
 	});
 	
