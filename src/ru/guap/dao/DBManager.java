@@ -118,11 +118,11 @@ public class DBManager {
 		while (res.next()) {
 			String teacherName = res.getString(1);
 			if (teacherName.trim().isEmpty()) {
-				teacherName = "<не назначен>";
+				teacherName = "";
 			}
 			return teacherName;
 		}    	
 
-		return "<не назначен>";
+		return "";
 	}
 }

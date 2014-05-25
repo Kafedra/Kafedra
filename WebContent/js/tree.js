@@ -88,16 +88,47 @@ function ajaxLoadMulti(id, streamid, discid) {
 }
 
 //Set teacher's load info by ajax-GET query*/
-function ajaxAppoint(teacher_id,array) {
-		if (array == 0) {
+(function ($) {
+	 
+    $.postJSON = function (url, data) {
+ 
+        var o = {
+            url: url,
+            type: "POST",
+            dataType: "json",
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data : data,
+        };
+ 
+        return $.ajax(o);
+    };
+ 
+} (jQuery));
+
+function ajaxAppoint(teacher_id, jsonGroups) {
+		if (jsonGroups == null) {
 			alert("Группа не выбрана!");
 			return;
 		}
-		
-		$.getJSON("../AppointLoadTo", {"data": array, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
-			if (response.success) {
 				
+		var jsonString = $.toJSON(jsonGroups);
+		
+		$.postJSON("../AppointLoadTo", {"data": jsonString, "teacher_id": teacher_id, "random" : Math.random()*99999}).done(function( response ) {
+			if (response.success) {
 				$('#progressbar').trigger('refresh');
+				
+				// Repaint appointed items
+				response.appointed.forEach(function(entry) {
+					if (response.teacher != "") 
+						$('#' + entry).children('a').removeClass('notappointed').addClass('appointed');
+					else
+						$('#' + entry).children('a').removeClass('appointed').addClass('notappointed');
+					
+					$('#' + entry).children('a').attr('teacher', response.teacher);
+				});
+				
+				paintStart();
+				
 			} else {
 				alert(response.reason + " - error!");
 			}

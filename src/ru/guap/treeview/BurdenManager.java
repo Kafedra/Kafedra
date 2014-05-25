@@ -81,7 +81,7 @@ public class BurdenManager {
 		LinkedList<Discipline> discs = this.getDiscsById(discId, true);
 		
 		for (Discipline disc : discs) {
-			System.out.println("[Au] Found disc " + disc.name + " with id " + discId);
+			//System.out.println("[Au] Found disc " + disc.name + " with id " + discId);
 			GroupStream stream = disc.getSteams().get(streamId);
 			
 			if (stream != null) {
@@ -91,7 +91,7 @@ public class BurdenManager {
 		
 		discs = this.getDiscsById(discId, false);
 		for (Discipline disc : discs) {
-			System.out.println("[Sp] Found disc " + disc.name + " with id " + discId);
+			//System.out.println("[Sp] Found disc " + disc.name + " with id " + discId);
 			GroupStream stream = disc.getSteams().get(streamId);
 			
 			if (stream != null) {
@@ -110,10 +110,10 @@ public class BurdenManager {
 		LinkedList<Discipline> list = (isAutumn) ? discsListAutumn : discsListSpring;
 		LinkedList<Discipline> res = new LinkedList<>();
 	
-		System.out.println("Looking for " + discId + " in list of " + list.size() + " discs");
+		//System.out.println("Looking for " + discId + " in list of " + list.size() + " discs");
 		for (Discipline disc : list) {
 			if (disc.id == discId) {
-				System.out.println("[>] Found disc " + disc.name + " with id " + discId);
+				//System.out.println("[>] Found disc " + disc.name + " with id " + discId);
 				
 				res.add(disc);
 			}
@@ -325,12 +325,13 @@ public class BurdenManager {
 		ResultSet rs = ps.executeQuery();
 
 		while (rs.next()) {
-			GroupLoadItem item = new GroupLoadItem(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5) != 0, rs.getInt(5));
+			String teacherName = DBManager.getInstance().getTeacherById(rs.getInt(5));
+			GroupLoadItem item = new GroupLoadItem(rs.getString(1), rs.getInt(2), rs.getString(3), rs.getInt(4), rs.getInt(5) != 0, rs.getInt(5), teacherName);
 			
-			item.valueEP = rs.getInt(6);
-			item.valueG = rs.getInt(7);
-			item.valueCO = rs.getInt(8);
-			item.valueCF = rs.getInt(9);
+			item.setValueEP(rs.getInt(6));
+			item.setValueG(rs.getInt(7));
+			item.setValueCO(rs.getInt(8));
+			item.setValueCF(rs.getInt(9));
 			
 			item.nameDisc = rs.getString(10);
 			

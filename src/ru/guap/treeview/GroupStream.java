@@ -100,7 +100,7 @@ public class GroupStream {
 		int valueG = 0;
 		
 		for (GroupLoadItem i : this.items) {
-			valueG += i.valueG;
+			valueG += i.getValueG();
 		}
 		
 		return valueG;
@@ -110,7 +110,7 @@ public class GroupStream {
 		int valueC = 0;
 		
 		for (GroupLoadItem i : this.items) {
-			valueC += i.valueCF + i.valueCO;
+			valueC += i.getValueCF() + i.getValueCO();
 		}
 		
 		return valueC;
@@ -120,9 +120,13 @@ public class GroupStream {
 		int valueEP = 0;
 		
 		for (GroupLoadItem i : this.items) {
-			valueEP += i.valueEP;
+			valueEP += i.getValueEP();
 		}
 		
 		return valueEP;
+	}
+	
+	public String getTeacherName() {
+		return this.items.get(0).getTeacherName();
 	}
 }
