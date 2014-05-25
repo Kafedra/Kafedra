@@ -1,42 +1,43 @@
 //Script for muli appointment in one click 
 var groupArray;
 var jsonGroupArray;
+//struct to show
+function TrueGroup () {
+	this.discnames = [];
+	this.kindloads = [];
+	this.groupNames = [];
+	this.teacher = [];
+	
+}
+
+//Groups to show on page
+function Group () {
+	var discname;
+	var kindLoad;
+	var groupName;
+	var valueG;
+	var valueC;
+	var total;
+	var teacher;
+	var id;	
+	var isMulti;
+}
+
+//Groups to send by json
+function CheckedGroup() { 
+	var isMulti;
+	var id;
+	var discId;
+	var streamId;		
+}
+
 $(function() {
-	//struct to show
-	function TrueGroup () {
-		this.discnames = [];
-		this.kindloads = [];
-		this.groupNames = [];
-		this.teacher = [];
-		
-	}
-	
-	//Groups to show on page
-	function Group () {
-		var discname;
-		var kindLoad;
-		var groupName;
-		var valueG;
-		var valueC;
-		var total;
-		var teacher;
-		var id;	
-		var isMulti;
-	}
-	
-	//Groups to send by json
-	function checkedGroup() { 
-		var isMulti;
-		var id;
-		var discId;
-		var streamId;		
-	}	
-	
 	//appointing by click
 	$( "#btnappoint" ).click(function( event ) {
 		var val = $('#combobox option:selected').val(); 	
 		//getting teacher and appointing to array of groups
-		ajaxAppoint(val,jsonGroupArray);
+		ajaxAppoint(val, jsonGroupArray);
+		
 		//refreshing bar charts
 		$('#percent').find('img').attr('src', '../PercentBarChart?'+Math.random());
 		$('#time').find('img').attr('src', '../HoursBarChart?'+Math.random());
@@ -50,16 +51,15 @@ $(function() {
 		$('#app-NameDisc').text('');
 		$('#app-KindLoad').text('');
 		$('#app-Group').text('');
+		$('#app-Teacher').text('');
 		
-		if($(this).is(':checked')){
-			
-		}
-		else {			
+		if(!$(this).is(':checked')){			
 			jsonGroupArray = new Array();
 			groupArray = new Array();
+			
 			$(".cb:checked").parent().find("a[group]").each(function(index,x) {				
 				var group = new Group();
-				var jsonGroup = new checkedGroup();
+				var jsonGroup = new CheckedGroup();
 				//Group to send by json
 				jsonGroup.id = $(x).attr('id');
 				jsonGroup.isMulti = $(x).attr('ismulti');
@@ -73,26 +73,22 @@ $(function() {
 				group.valueG =	$(x).attr('valueg');
 				group.valueC= 	$(x).attr('valuec');
 				group.total =	$(x).attr('valueep');
-				group.teacher = $(x).attr('teacherid'); //--
+				group.teacher = $(x).attr('teacher'); 
 				group.id = 		$(x).attr('id');	
 				group.isMulti = $(x).attr('ismulti');
 				
 				//remove repeatings
-				if (trueGroups.discnames.indexOf(group.discname) >= 0 ){ 					
-				}
-				else
+				if (trueGroups.discnames.indexOf(group.discname) < 0 )					
 					trueGroups.discnames.push(group.discname);
 				
-				if(trueGroups.kindloads.indexOf(group.kindLoad) >= 0){
-				}
-				else
+				if(trueGroups.kindloads.indexOf(group.kindLoad) < 0)
 					trueGroups.kindloads.push(group.kindLoad);
 				
-				if(trueGroups.groupNames.indexOf(group.groupName) >= 0){
-					
-				}
-				else 
+				if(trueGroups.groupNames.indexOf(group.groupName) < 0)
 					trueGroups.groupNames.push(group.groupName);
+
+				if(trueGroups.teacher.indexOf(group.teacher) < 0)
+					trueGroups.teacher.push(group.teacher);				
 				
 				//adding groups to array
 				jsonGroupArray.push(jsonGroup);
@@ -100,7 +96,7 @@ $(function() {
 			});
 		}
 		
-		//Showig info on the page
+		//Show info on the page
 		trueGroups.discnames.forEach(function(x){
 			$('#app-NameDisc').append(x + " ");
 		});
@@ -112,16 +108,24 @@ $(function() {
 		trueGroups.groupNames.forEach(function(x){
 			$('#app-Group').append(x + " ");			
 		});
-		/*
-		 * 
-		$('#app-NameDisc').text(responseObject.namedisc);
-		$('#app-KindLoad').text(responseObject.kindload);
-		$('#app-Group').text(x.groupName + " ");
-		$('#app-Teacher').text(responseObject.fio);
-
-		$('#app-ValueG').text(responseObject.valueg);
-		$('#app-ValueC').text(responseObject.valuec);
-		$('#app-Total').text(responseObject.valuetotal);
-		*/
+		
+		var valueG = 0;
+		groupArray.forEach(function(x){
+			valueG += +x.valueG;
+						
+		});
+		$('#app-ValueG').text(valueG);
+		
+		var valueC = 0;
+		groupArray.forEach(function(x){
+			valueC += +x.valueC;	
+		});		
+		
+		$('#app-ValueC').text(valueC);
+		$('#app-Total').text(+valueG + +valueC);		
+		
+		trueGroups.teacher.forEach(function(x){
+			$('#app-Teacher').append(x + " ");
+		});		
 	});	
 });

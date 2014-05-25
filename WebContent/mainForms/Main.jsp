@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="../css/ProgressBar.css">
 <script src="../js/jquery-1.8.3.js"></script>
 <script src="../js/jquery-ui-1.9.2.custom.min.js"></script>
+<script src="../js/jquery.json.min.js"></script>
 <script src="../js/script.js"></script>
 <script src="../js/multiApp.js"></script>
 <script src="../js/tree.js"></script>

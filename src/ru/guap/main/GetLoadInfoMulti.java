@@ -96,8 +96,8 @@ public class GetLoadInfoMulti extends HttpServlet {
 						isInfoSet = true;
 					}
 					
-					if (item.valueEP != 0) {
-						valueEP = item.valueEP;
+					if (item.getValueEP() != 0) {
+						valueEP = item.getValueEP();
 					}					
 					
 					if (item.getTeacherId() != 0 && item.isAppointed()) {
@@ -107,8 +107,8 @@ public class GetLoadInfoMulti extends HttpServlet {
 						isAppointed = false;
 					}
 					
-					valueG += item.valueG;
-					valueC += item.valueCF + item.valueCO;
+					valueG += item.getValueG();
+					valueC += item.getValueCF() + item.getValueCO();
 				}
 				
 				PrintWriter out = new PrintWriter(new OutputStreamWriter(response.getOutputStream(), "UTF8"), true);
