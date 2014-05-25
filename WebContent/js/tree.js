@@ -119,7 +119,11 @@ function ajaxAppoint(teacher_id, jsonGroups) {
 				
 				// Repaint appointed items
 				response.appointed.forEach(function(entry) {
-					$('#' + entry).children('a').removeClass('notappointed').addClass('appointed');
+					if (response.teacher != "") 
+						$('#' + entry).children('a').removeClass('notappointed').addClass('appointed');
+					else
+						$('#' + entry).children('a').removeClass('appointed').addClass('notappointed');
+					
 					$('#' + entry).children('a').attr('teacher', response.teacher);
 				});
 				
