@@ -57,10 +57,12 @@ $(function() {
 	
 	$( "#checkAll" ).click(function( event ) {
 		if($(".cb").prop("checked")){
-			$(".cb").attr("checked",false);			
+			$(".cb").attr("checked",false);	
 		}
-		else
-			$(".cb").attr("checked",true);			
+		else{
+			$(".cb").attr("checked",true);
+		}
+		$(".cb:last").trigger('change');	
 	});	
 	
 	$(".cb").change(function (event) {
@@ -71,8 +73,9 @@ $(function() {
 		}
 	});
 	
-	$( "#clearChecked" ).click(function( event ) {			
+	$( "#clearChecked" ).click(function( event ) {	
 		$(".cb:checked").removeAttr("checked");
+		$(".cb:last").trigger('change');
 	});
 	
 	$( "#funcMenu" ).menu({position: {at: "left bottom"}});

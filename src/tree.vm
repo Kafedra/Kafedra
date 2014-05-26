@@ -4,7 +4,7 @@
     
     #if ($child.getChildren().size() != 0) 
     	<li class="parent-node" id="$child.getNodeId()">
-  		<img class="plus" src="../treeImg/plus.jpg">
+  		<a href = "#" class = "isExpandable"><img class="plus" src="../treeImg/plus.jpg"></a>
     #else 
      	<li class="last" id="$child.getNodeId()">
     #end     	
