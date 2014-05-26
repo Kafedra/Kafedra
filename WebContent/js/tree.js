@@ -33,12 +33,12 @@ $(function() {
 	
 	function ulOpen($ul){
 		$ul.show();
-		$ul.siblings(".plus").attr("src","../treeImg/minus.jpg");
+		$ul.siblings(".isExpandable").children(".plus").attr("src","../treeImg/minus.jpg");
 	}
 	
 	function ulClose($ul){
 		$ul.hide();
-		$ul.siblings(".plus").attr("src","../treeImg/plus.jpg");
+		$ul.siblings(".isExpandable").children(".plus").attr("src","../treeImg/plus.jpg");
 	}
 });
 

@@ -31,6 +31,9 @@ function CheckedGroup() {
 	var streamId;		
 }
 
+
+
+
 $(function() {
 	//appointing by click
 	$( "#btnappoint" ).click(function( event ) {
@@ -95,37 +98,47 @@ $(function() {
 				groupArray.push(group);				
 			});
 		}
-		
+		var nameDisc = "";
+		var kindload = '';
+		var teacher = '';
+		var valueG = 0;
+		var valueC = 0;
+		var group = '';
 		//Show info on the page
 		trueGroups.discnames.forEach(function(x){
-			$('#app-NameDisc').append(x + " ");
+			nameDisc += x + " ";
 		});
 			
 		trueGroups.kindloads.forEach(function(x){
-			$('#app-KindLoad').append(x + " ");
+			kindload += x + " ";			
 		});
 		
 		trueGroups.groupNames.forEach(function(x){
-			$('#app-Group').append(x + " ");			
+			group += x + " ";			
 		});
 		
-		var valueG = 0;
+		
 		groupArray.forEach(function(x){
 			valueG += +x.valueG;
 						
 		});
-		$('#app-ValueG').text(valueG);
 		
-		var valueC = 0;
+		trueGroups.teacher.forEach(function(x){
+			teacher += x + " ";
+		});			
+		
 		groupArray.forEach(function(x){
 			valueC += +x.valueC;	
 		});		
 		
+		//appending text
+		$('#app-Group').text(group);
+		$('#app-NameDisc').text(nameDisc);
+		$('#app-ValueG').text(valueG);
 		$('#app-ValueC').text(valueC);
 		$('#app-Total').text(+valueG + +valueC);		
-		
-		trueGroups.teacher.forEach(function(x){
-			$('#app-Teacher').append(x + " ");
-		});		
+		$('#app-KindLoad').text(kindload);
+		$('#app-Teacher').text();
+			
 	});	
 });
