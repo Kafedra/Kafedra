@@ -129,6 +129,8 @@ function ajaxAppoint(teacher_id, jsonGroups) {
 				
 				paintStart();
 				
+				// Refresh group card
+				$(".cb:last").trigger('change');	
 			} else {
 				alert(response.reason + " - error!");
 			}
