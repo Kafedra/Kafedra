@@ -138,7 +138,7 @@ $(function() {
 		$('#app-ValueC').text(valueC);
 		$('#app-Total').text(+valueG + +valueC);		
 		$('#app-KindLoad').text(kindload);
-		$('#app-Teacher').text();
+		$('#app-Teacher').text(teacher);
 			
 	});	
 });
